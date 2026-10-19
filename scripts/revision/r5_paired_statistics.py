@@ -6,8 +6,8 @@ resampling design. This script reports the paired differences themselves, the
 tie handling, and the expected overlap between subsamples, so the manuscript
 can present the evidence without implying independent replication.
 
-Output: docs/results/revision/paired_differences.csv
-        docs/results/revision/subsample_overlap.csv
+Output: results/revision/paired_differences.csv
+        results/revision/subsample_overlap.csv
 """
 import sys
 from itertools import combinations
@@ -20,7 +20,7 @@ from scipy.stats import wilcoxon
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-RES = ROOT / "docs" / "results"
+RES = ROOT / "results"
 OUT = RES / "revision"
 SCENARIOS = ("S1", "S2", "S3")
 COMPARATORS = ("B2", "B3", "B4")

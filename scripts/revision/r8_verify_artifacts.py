@@ -21,8 +21,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from zonasi import baselines, solver  # noqa: E402
-from zonasi.fairness import priority_violations  # noqa: E402
+from lexzon import baselines, solver  # noqa: E402
+from lexzon.fairness import priority_violations  # noqa: E402
 
 ART = ROOT / "docs" / "artifacts"
 RADIUS = 1.0

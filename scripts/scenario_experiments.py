@@ -4,7 +4,7 @@ S2 surplus, S3 shortage): method comparison, radius sweep, resampled
 Wilcoxon test and school utilisation, plus a repeated scalability timing.
 
 Run from the project root:  python scripts/scenario_experiments.py
-Outputs: docs/results/scenarios/*.csv
+Outputs: results/scenarios/*.csv
 """
 import sys
 import time
@@ -16,12 +16,12 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from zonasi import data, solver  # noqa: E402
-from zonasi import experiments as ex  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
-from zonasi.metrics import school_utilization  # noqa: E402
+from lexzon import data, solver  # noqa: E402
+from lexzon import experiments as ex  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
+from lexzon.metrics import school_utilization  # noqa: E402
 
-OUT = ROOT / "docs" / "results" / "scenarios"
+OUT = ROOT / "results" / "scenarios"
 RADIUS = 1.0
 SEEDS = 30
 RADII = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0, None]

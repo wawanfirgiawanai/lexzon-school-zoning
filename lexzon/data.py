@@ -18,10 +18,10 @@ ALIASES = {
 }
 
 BUNDLED_DATASETS = {
-    "Main dataset (original quotas)": ("sekolah.csv", "dataset_siswa.csv"),
-    "Scenario 1 — Exact fit (seats = students)": ("skenario_1_kuota_pas/sekolah.csv", "skenario_1_kuota_pas/dataset_siswa.csv"),
-    "Scenario 2 — Surplus (seats > students)": ("skenario_2_kuota_lebih/sekolah.csv", "skenario_2_kuota_lebih/dataset_siswa.csv"),
-    "Scenario 3 — Shortage (seats < students)": ("skenario_3_kuota_kurang/sekolah.csv", "skenario_3_kuota_kurang/dataset_siswa.csv"),
+    "Main dataset (original quotas)": ("schools.csv", "students.csv"),
+    "Scenario 1 — Exact fit (seats = students)": ("scenario_1_matched/schools.csv", "scenario_1_matched/students.csv"),
+    "Scenario 2 — Surplus (seats > students)": ("scenario_2_surplus/schools.csv", "scenario_2_surplus/students.csv"),
+    "Scenario 3 — Shortage (seats < students)": ("scenario_3_insufficient/schools.csv", "scenario_3_insufficient/students.csv"),
 }
 SCENARIO_KEYS = [k for k in BUNDLED_DATASETS if k.startswith("Scenario")]
 

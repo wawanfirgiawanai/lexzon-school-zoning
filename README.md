@@ -15,7 +15,7 @@ unassigned, and each unassigned student is labelled with the binding cause.
 
 | Path | Contents |
 |---|---|
-| `zonasi/` | The method. `solver.py` holds the three stages, `pareto.py` the violation-budget model and LEXZON-F, `fairness.py` the priority-violation metric and the constrained k-means baseline, `baselines.py` the comparison rules. |
+| `lexzon/` | The method. `solver.py` holds the three stages, `pareto.py` the violation-budget model and LEXZON-F, `fairness.py` the priority-violation metric and the constrained k-means baseline, `baselines.py` the comparison rules. |
 | `scripts/` | Experiment drivers. `scenario_experiments.py`, `fairness_experiments.py` and `pareto_experiments.py` produce the main results; `revision/` holds the additional studies requested in review. |
 | `tests/` | 126 unit tests and 22 end-to-end checks, including optimality checks against exhaustive solutions on small instances. |
 | `artifacts/` | Machine-readable description of every experimental instance and output. |

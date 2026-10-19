@@ -2,5 +2,9 @@ __pycache__/
 *.pyc
 .venv/
 .pytest_cache/
-# applicant locations are personal data and must not be committed
+# applicant locations are personal data and must never be committed,
+# under either the current or the former file name
+dataset/students.csv
+dataset/**/students.csv
+dataset/dataset_siswa.csv
 dataset/**/dataset_siswa.csv

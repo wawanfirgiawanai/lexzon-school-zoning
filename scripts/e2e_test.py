@@ -160,9 +160,9 @@ def map_state(fr):
 
 
 # ------------------------------------------------------------------ test cases
-@case("TC-01", "Menjalankan aplikasi",
-      "Buka aplikasi di browser.",
-      "Halaman tampil tanpa error, judul aplikasi dan 9 tab tersedia.")
+@case("TC-01", "Start the application",
+      "Open the application in a browser.",
+      "The page loads without errors and shows the title and nine tabs.")
 def tc01(page, ctx):
     t0 = time.time()
     page.goto(ctx["url"])
@@ -174,34 +174,34 @@ def tc01(page, ctx):
     assert page.locator('[data-testid="stException"]').count() == 0
     expect(page.get_by_role("heading", name="Student-to-School Allocation within a Zoning Radius")).to_be_visible()
     shot(page, "01_about.png")
-    return f"Halaman termuat dalam {ctx['load_seconds']} detik; 9 tab: {', '.join(t.split(' ', 1)[-1] for t in tabs)}."
+    return f"Page loaded in {ctx['load_seconds']} s; nine tabs: {', '.join(t.split(' ', 1)[-1] for t in tabs)}."
 
 
-@case("TC-02", "Tab About",
-      "Buka tab About.",
-      "Penjelasan masalah, metode tiga tahap, tabel pembanding B1–B6, batasan, privasi, dan format CSV tampil.")
+@case("TC-02", "About tab",
+      "Open the About tab.",
+      "The problem statement, the three-stage method, the B1-B6 comparison table, the limitations, the privacy note, and the CSV format are shown.")
 def tc02(page, ctx):
     scope = open_tab(page, "About")
     text = scope.inner_text()
     for needle in ["Proposed method", "Baselines", "Limitations", "Privacy", "CSV format", "Deferred Acceptance"]:
         assert needle in text, needle
-    return "Semua bagian penjelasan tampil (Problem, Proposed method, Baselines, Validation, Limitations, Privacy, Map colors, CSV format)."
+    return "Every section is shown (Problem, Proposed method, Baselines, Validation, Limitations, Privacy, Map colors, CSV format)."
 
 
-@case("TC-03", "Tab Data (dataset utama)",
-      "Buka tab Data dengan dataset utama.",
-      "Students = 1,209; Schools = 28; Seats = 1,428; nama sekolah/siswa sudah dianonimkan.")
+@case("TC-03", "Data tab (main dataset)",
+      "Open the Data tab with the main dataset.",
+      "Students = 1,209; Schools = 28; Seats = 1,428; school and applicant names are anonymized.")
 def tc03(page, ctx):
     scope = open_tab(page, "Data")
     vals = {k: metric(scope, k) for k in ["Students", "Schools", "Seats", "Seats per student", "No school within radius"]}
     assert vals["Students"] == "1,209" and vals["Schools"] == "28" and vals["Seats"] == "1,428", vals
     shot(page, "03_data.png")
     return (f"Students {vals['Students']}, Schools {vals['Schools']}, Seats {vals['Seats']}, "
-            f"seats per student {vals['Seats per student']}, tanpa sekolah dalam radius {vals['No school within radius']}.")
+            f"seats per student {vals['Seats per student']}, no school within the radius {vals['No school within radius']}.")
 
 
-@case("TC-04", "Tab Allocation: hasil metode usulan",
-      "Buka tab Allocation (radius 1 km).",
+@case("TC-04", "Allocation tab: result of the proposed method",
+      "Open the Allocation tab (radius 1 km).",
       "Admitted = 1,180; No school ✕ = 29; Longest trip = 0.995 km.")
 def tc04(page, ctx):
     scope = open_tab(page, "Allocation")
@@ -227,9 +227,9 @@ def tc05(page, ctx):
     return f"Max-flow 1180, gap 0, z* = {z} km (max-flow turun ke 1179 di bawahnya), tahap 3 Optimal (LP integer terverifikasi)."
 
 
-@case("TC-06", "Peta zonasi interaktif",
-      "Gulir ke peta pada tab Allocation.",
-      "Peta tampil; 28 penanda sekolah dan 29 penanda ✕; titik siswa tergambar.")
+@case("TC-06", "Interactive zoning map",
+      "Scroll to the map on the Allocation tab.",
+      "The map is shown with 28 school markers and 29 unassigned markers, and the applicant points are drawn.")
 def tc06(page, ctx):
     fr = map_frame(page)
     state = map_state(fr)
@@ -237,12 +237,12 @@ def tc06(page, ctx):
     assert state["crosses"] == 29 and state["schools"] == 28, state
     assert state["circles"] >= 1180, state
     shot(page, "06_map.png", page.locator('iframe[data-testid="stIFrame"]').first)
-    return f"28 sekolah, 29 ✕, {state['circles']} elemen titik/garis, zoom awal {state['zoom']:.2f}."
+    return f"28 schools, 29 unassigned, {state['circles']} point and line elements, initial zoom {state['zoom']:.2f}."
 
 
-@case("TC-07", "Sorot satu sekolah di peta",
-      "Pilih 'School 26' pada 'Highlight a school'.",
-      "Peta tetap tampil, legenda menandai sekolah terpilih, dan peta memperbesar ke zona sekolah tersebut.")
+@case("TC-07", "Highlight one school on the map",
+      "Pick 'School 26' under 'Highlight a school'.",
+      "The map stays visible, the legend marks the selected school, and the map zooms to its zone.")
 def tc07(page, ctx):
     scope = panel(page)
     choose(page, scope.locator('[data-testid="stSelectbox"]').first, "School 26")
@@ -252,12 +252,12 @@ def tc07(page, ctx):
     assert state["zoom"] > ctx["zoom_all"], state
     shot(page, "07_highlight.png", page.locator('iframe[data-testid="stIFrame"]').first)
     choose(page, panel(page).locator('[data-testid="stSelectbox"]').first, "All schools")
-    return f"Legenda menandai sekolah terpilih; zoom berubah dari {ctx['zoom_all']:.2f} ke {state['zoom']:.2f}."
+    return f"The legend marks the selected school; zoom changed from {ctx['zoom_all']:.2f} to {state['zoom']:.2f}."
 
 
-@case("TC-08", "Unduh daftar alokasi siswa",
-      "Klik 'Download full list (CSV)'.",
-      "CSV berisi 1.209 baris, 29 siswa berstatus ✕, nama siswa teranonimkan.")
+@case("TC-08", "Download the assignment list",
+      "Click 'Download full list (CSV)'.",
+      "The CSV holds 1,209 rows, 29 unassigned applicants, and anonymized applicant names.")
 def tc08(page, ctx):
     path = download(page, panel(page), "Download full list (CSV)", "student_allocation.csv")
     df = pd.read_csv(path)
@@ -265,12 +265,12 @@ def tc08(page, ctx):
     assert len(df) == 1209 and rejected == 29, (len(df), rejected)
     assert df["Student"].iloc[0] == "Student 0001" and df["Student"].str.match(r"^Student \d{4}$").all()
     reasons = df.loc[df["Status"] != "Admitted", "Status"].value_counts().to_dict()
-    return f"{len(df)} baris; ✕ = {rejected} ({'; '.join(f'{k}: {v}' for k, v in reasons.items())}); nama berformat 'Student 0001'."
+    return f"{len(df)} rows; unassigned = {rejected} ({'; '.join(f'{k}: {v}' for k, v in reasons.items())}); names formatted as 'Student 0001'."
 
 
-@case("TC-09", "Ekspor peta untuk jurnal",
-      "Klik 'Prepare map figure for the paper', lalu 'Download map (PNG)'.",
-      "File PNG valid 300 DPI terunduh.")
+@case("TC-09", "Export the map for the paper",
+      "Click 'Prepare map figure for the paper', then 'Download map (PNG)'.",
+      "A valid 300 DPI PNG file is downloaded.")
 def tc09(page, ctx):
     scope = panel(page)
     scope.get_by_role("button", name="Prepare map figure for the paper (PNG, 300 DPI)").click()
@@ -282,12 +282,12 @@ def tc09(page, ctx):
     with Image.open(path) as im:
         size, dpi = im.size, im.info.get("dpi", (0, 0))
     assert round(dpi[0]) == 300, dpi
-    return f"PNG {size[0]}×{size[1]} piksel, {round(dpi[0])} DPI, {len(data) // 1024} KB."
+    return f"PNG {size[0]}x{size[1]} pixels, {round(dpi[0])} DPI, {len(data) // 1024} KB."
 
 
-@case("TC-10", "Tab Comparison",
-      "Buka tab Comparison lalu unduh tabelnya.",
-      "Batas atas 1180; ✕: Usulan 29, B2 92, B4 102; B5 dan B6 = 29; B1 melanggar kuota.")
+@case("TC-10", "Comparison tab",
+      "Open the Comparison tab and download its table.",
+      "Upper bound 1180; unassigned: proposed 29, B2 92, B4 102; B5 and B6 = 29; B1 breaks capacity.")
 def tc10(page, ctx):
     scope = open_tab(page, "Comparison")
     assert "at most 1180 students" in scope.inner_text()
@@ -297,13 +297,13 @@ def tc10(page, ctx):
     overflow = dict(zip(df["Code"], df["Quota overflow (students)"]))
     assert rej["P"] == 29 and rej["B2"] == 92 and rej["B4"] == 102 and rej["B5"] == 29 and rej["B6"] == 29, rej
     assert float(overflow["B1"]) > 0 and float(overflow["P"]) == 0, overflow
-    return (f"✕ — P {rej['P']}, B1 {rej['B1']} (kelebihan kuota {overflow['B1']}), B2 {rej['B2']}, B3 {rej['B3']}, "
+    return (f"Unassigned - P {rej['P']}, B1 {rej['B1']} (capacity overflow {overflow['B1']}), B2 {rej['B2']}, B3 {rej['B3']}, "
             f"B4 {rej['B4']}, B5 {rej['B5']}, B6 {rej['B6']}.")
 
 
-@case("TC-11", "Studi ablasi",
-      "Buka tab Ablation, klik 'Run ablation study', unduh tabel.",
-      "4 konfigurasi; A0–A1 menempatkan 47 siswa di luar radius; A2–A3 menghasilkan 29 ✕ dan 0 di luar radius.")
+@case("TC-11", "Ablation study",
+      "Open the Ablation tab, click 'Run ablation study', download the table.",
+      "Four configurations; A0-A1 place 47 applicants beyond the radius; A2-A3 leave 29 unassigned and none beyond the radius.")
 def tc11(page, ctx):
     scope = run_experiment(page, "Ablation", "Run ablation study")
     shot(page, "11_ablation.png", scope.locator('[data-testid="stPlotlyChart"]').first)
@@ -311,24 +311,24 @@ def tc11(page, ctx):
     beyond = dict(zip(df["Code"], df["Admitted beyond radius"]))
     rej = dict(zip(df["Code"], df["No school (✕)"]))
     assert len(df) == 4 and beyond["A0"] == 47 and beyond["A2"] == 0 and rej["A3"] == 29, (beyond, rej)
-    return f"4 baris; di luar radius A0–A1 = {beyond['A0']}, A2–A3 = {beyond['A2']}; ✕ A3 = {rej['A3']}."
+    return f"Four rows; beyond the radius A0-A1 = {beyond['A0']}, A2-A3 = {beyond['A2']}; unassigned A3 = {rej['A3']}."
 
 
-@case("TC-12", "Sensitivitas radius",
-      "Buka tab Radius Sensitivity (radius 0.5–3 km + ∞), klik 'Run sensitivity analysis'.",
-      "32 baris (8 radius × 4 metode); ✕ usulan tidak pernah lebih besar dari B2/B4 di radius mana pun.")
+@case("TC-12", "Radius sensitivity",
+      "Open the Radius Sensitivity tab (radius 0.5-3 km plus unrestricted), click 'Run sensitivity analysis'.",
+      "32 rows (8 radii x 4 methods); the proposed method never leaves more applicants unassigned than B2 or B4 at any radius.")
 def tc12(page, ctx):
     scope = run_experiment(page, "Radius Sensitivity", "Run sensitivity analysis")
     shot(page, "12_radius.png", scope.locator('[data-testid="stPlotlyChart"]').first)
     df = pd.read_csv(download(page, scope, "Download table (CSV)", "radius_sensitivity.csv"))
     pivot = df.pivot(index="Radius (km)", columns="Code", values="No school (✕)")
     assert len(df) == 32 and (pivot["P"] <= pivot["B2"]).all() and (pivot["P"] <= pivot["B4"]).all()
-    return "32 baris; ✕ usulan per radius: " + ", ".join(f"{('∞' if r == float('inf') else f'{r:g}')}→{int(v)}" for r, v in pivot["P"].items()) + "."
+    return "32 rows; unassigned under the proposed method by radius: " + ", ".join(f"{('∞' if r == float('inf') else f'{r:g}')}→{int(v)}" for r, v in pivot["P"].items()) + "."
 
 
-@case("TC-13", "Skenario kapasitas",
-      "Buka tab Capacity Scenarios, klik 'Run scenario study'.",
-      "3 skenario; model asli tidak feasible pada Skenario 3; ✕ usulan 68 / 29 / 223.")
+@case("TC-13", "Capacity scenarios",
+      "Open the Capacity Scenarios tab, click 'Run scenario study'.",
+      "Three scenarios; the original model is infeasible in Scenario 3; the proposed method leaves 68 / 29 / 223 unassigned.")
 def tc13(page, ctx):
     scope = run_experiment(page, "Capacity Scenarios", "Run scenario study")
     shot(page, "13_scenarios.png", scope.locator('[data-testid="stPlotlyChart"]').first)
@@ -336,12 +336,12 @@ def tc13(page, ctx):
     p = df[df["Code"] == "P"].set_index("Scenario")
     feasible = df.drop_duplicates("Scenario").set_index("Scenario")["Original model feasible"].to_dict()
     assert list(p["No school (✕)"]) == [68, 29, 223] and feasible["Scenario 3"] == "No", (p, feasible)
-    return f"✕ usulan: Skenario 1 = 68, Skenario 2 = 29, Skenario 3 = 223; model asli feasible: {feasible}."
+    return f"Unassigned under the proposed method: Scenario 1 = 68, Scenario 2 = 29, Scenario 3 = 223; original model feasible: {feasible}."
 
 
-@case("TC-14", "Uji statistik (resampling)",
-      "Buka tab Statistical Test (30 run, 80%, seed 42), klik 'Run statistical test'.",
-      "B2, B3, B4 signifikan (p < 0,05); B5 dan B6 identik.")
+@case("TC-14", "Statistical test (resampling)",
+      "Open the Statistical Test tab (30 runs, 80%, seed 42), click 'Run statistical test'.",
+      "B2, B3 and B4 are significant (p < 0.05); B5 and B6 are identical.")
 def tc14(page, ctx):
     scope = run_experiment(page, "Statistical Test", "Run statistical test")
     shot(page, "14_statistics.png", scope.locator('[data-testid="stPlotlyChart"]').first)
@@ -353,32 +353,32 @@ def tc14(page, ctx):
     return "; ".join(f"{c}: {conclusions[c]}" + (f" (p = {pvals[c]:.1e})" if pd.notna(pvals[c]) else "") for c in conclusions) + "."
 
 
-@case("TC-15", "Uji skalabilitas",
-      "Buka tab Scalability (1k, 5k, 10k, 20k siswa), klik 'Run scalability test'.",
-      "Semua ukuran berstatus Optimal dan jumlah diterima = batas atas max-flow.")
+@case("TC-15", "Scalability test",
+      "Open the Scalability tab (1k, 5k, 10k, 20k applicants), click 'Run scalability test'.",
+      "Every size reports status Optimal and enrollment equal to the maximum-flow upper bound.")
 def tc15(page, ctx):
     scope = run_experiment(page, "Scalability", "Run scalability test")
     shot(page, "15_scalability.png", scope.locator('[data-testid="stPlotlyChart"]').first)
     df = pd.read_csv(download(page, scope, "Download table (CSV)", "scalability.csv"))
     assert (df["Status"] == "Optimal").all() and (df["Admitted"] == df["Max-flow upper bound"]).all()
-    return "; ".join(f"{int(n):,} siswa: {s:.2f} s"
+    return "; ".join(f"{int(n):,} applicants: {s:.2f} s"
                      for n, s in zip(df["Students"], df["Proposed total runtime (s)"])) + "."
 
 
-@case("TC-16", "Unduh semua tabel (ZIP)",
-      "Klik tombol ZIP di sidebar.",
-      "ZIP terunduh dan berisi semua tabel yang sudah dihitung.")
+@case("TC-16", "Download every table (ZIP)",
+      "Click the ZIP button in the sidebar.",
+      "The ZIP is downloaded and holds every table computed so far.")
 def tc16(page, ctx):
-    path = download(page, sidebar(page), "Download all tables", "zonasi_2_results.zip")
+    path = download(page, sidebar(page), "Download all tables", "lexzon_results.zip")
     with zipfile.ZipFile(path) as zf:
         names = sorted(zf.namelist())
     assert len(names) >= 8 and "method_comparison.csv" in names and "ablation.csv" in names, names
-    return f"ZIP berisi {len(names)} berkas: {', '.join(names)}."
+    return f"The ZIP holds {len(names)} files: {', '.join(names)}."
 
 
-@case("TC-17", "Mengubah radius zonasi",
-      "Ubah 'Zoning radius (km)' menjadi 0.5.",
-      "Hasil diperbarui: Admitted = 1,099 dan ✕ = 110; jarak terjauh ≤ 0.5 km.")
+@case("TC-17", "Change the zoning radius",
+      "Set 'Zoning radius (km)' to 0.5.",
+      "The results update: Admitted = 1,099 and unassigned = 110; the longest trip is at most 0.5 km.")
 def tc17(page, ctx):
     set_radius(page, 0.5)
     scope = open_tab(page, "Allocation")
@@ -387,21 +387,21 @@ def tc17(page, ctx):
     return f"Admitted {vals['Admitted']}, ✕ {vals['No school ✕']}, longest trip {vals['Longest trip']}."
 
 
-@case("TC-18", "Nilai batas radius (minimum 0.1 km)",
-      "Ubah radius menjadi 0.1 km (nilai terkecil yang diizinkan).",
-      "Aplikasi tetap berjalan tanpa error; jarak terjauh ≤ 0.1 km.")
+@case("TC-18", "Radius boundary value (minimum 0.1 km)",
+      "Set the radius to 0.1 km, the smallest value allowed.",
+      "The application keeps running without errors; the longest trip is at most 0.1 km.")
 def tc18(page, ctx):
     set_radius(page, 0.1)
     scope = open_tab(page, "Allocation")
     vals = {k: metric(scope, k) for k in ["Admitted", "No school ✕", "Longest trip"]}
     assert page.locator('[data-testid="stException"]').count() == 0
     assert number(vals["Longest trip"]) <= 0.1, vals
-    return f"Tanpa error; Admitted {vals['Admitted']}, ✕ {vals['No school ✕']}, longest trip {vals['Longest trip']}."
+    return f"No errors; Admitted {vals['Admitted']}, unassigned {vals['No school ✕']}, longest trip {vals['Longest trip']}."
 
 
-@case("TC-19", "Tanpa batas radius",
-      "Matikan 'Limit by zoning radius'.",
-      "Semua 1,209 siswa diterima (✕ = 0) dan jarak terjauh 1.901 km (tahap min-maks aktif).")
+@case("TC-19", "Without a radius limit",
+      "Switch off 'Limit by zoning radius'.",
+      "All 1,209 applicants are assigned (none unassigned) and the longest trip is 1.901 km, so the min-max stage is active.")
 def tc19(page, ctx):
     set_radius(page, 1.0)
     sidebar(page).get_by_text("Limit by zoning radius").click()
@@ -414,9 +414,9 @@ def tc19(page, ctx):
     return f"Admitted {vals['Admitted']}, ✕ {vals['No school ✕']}, longest trip {vals['Longest trip']}."
 
 
-@case("TC-20", "Ganti dataset: Skenario 3 (kekurangan kursi)",
-      "Pilih dataset 'Scenario 3 — Shortage (seats < students)'.",
-      "Seats = 1,000; Admitted = 986; ✕ = 223.")
+@case("TC-20", "Switch dataset: Scenario 3 (seat shortage)",
+      "Pick the dataset 'Scenario 3 — Shortage (seats < students)'.",
+      "Seats = 1,000; Admitted = 986; unassigned = 223.")
 def tc20(page, ctx):
     choose(page, sidebar(page).locator('[data-testid="stSelectbox"]').first, "Scenario 3 — Shortage (seats < students)")
     data_scope = open_tab(page, "Data")
@@ -429,15 +429,15 @@ def tc20(page, ctx):
     return f"Seats {seats}, Admitted {vals['Admitted']}, ✕ {vals['No school ✕']}."
 
 
-@case("TC-21", "Unggah CSV valid (header bahasa Indonesia, nama asli)",
-      "Pilih 'Upload CSV', unggah CSV sekolah dan siswa dengan kolom Nama Sekolah / Jumlah Diterima / Nama Siswa.",
-      "Data terbaca (1,209 siswa, 28 sekolah), nama otomatis dianonimkan, hasil sama dengan dataset bawaan.")
+@case("TC-21", "Upload a valid CSV (Indonesian headers, real names)",
+      "Pick 'Upload CSV' and upload school and applicant files whose columns are named 'Nama Sekolah' / 'Jumlah Diterima' / 'Nama Siswa'.",
+      "The data are read (1,209 applicants, 28 schools), names are anonymized automatically, and the results match the bundled dataset.")
 def tc21(page, ctx):
     tmp = OUT / "upload_fixtures"
     tmp.mkdir(parents=True, exist_ok=True)
-    schools = pd.read_csv(ROOT / "dataset" / "sekolah.csv").rename(columns={"School": "Nama Sekolah", "Quota": "Jumlah Diterima"})
+    schools = pd.read_csv(ROOT / "dataset" / "schools.csv").rename(columns={"School": "Nama Sekolah", "Quota": "Jumlah Diterima"})
     schools["Nama Sekolah"] = [f"SD CONTOH {i + 1}" for i in range(len(schools))]
-    students = pd.read_csv(ROOT / "dataset" / "dataset_siswa.csv").rename(columns={"Student": "Nama Siswa"})
+    students = pd.read_csv(ROOT / "dataset" / "students.csv").rename(columns={"Student": "Nama Siswa"})
     students["Nama Siswa"] = [f"Nama Asli {i + 1}" for i in range(len(students))]
     schools.to_csv(tmp / "sekolah_upload.csv", index=False)
     students.to_csv(tmp / "siswa_upload.csv", index=False)
@@ -455,15 +455,15 @@ def tc21(page, ctx):
     assert vals["Admitted"] == "1,180" and vals["No school ✕"] == "29", vals
     assert not df["Student"].str.contains("Nama Asli").any() and not df["Assigned school"].astype(str).str.contains("CONTOH").any()
     shot(page, "21_upload.png")
-    return f"Upload diterima; Admitted {vals['Admitted']}, ✕ {vals['No school ✕']}; tidak ada nama asli di hasil unduhan."
+    return f"Upload accepted; Admitted {vals['Admitted']}, unassigned {vals['No school ✕']}; no real name appears in the download."
 
 
-@case("TC-22", "Unggah CSV tidak valid",
-      "Unggah CSV sekolah tanpa kolom kuota.",
-      "Muncul pesan kesalahan yang jelas di sidebar; aplikasi tidak crash.")
+@case("TC-22", "Upload an invalid CSV",
+      "Upload a school CSV without the capacity column.",
+      "A clear error message appears in the sidebar and the application does not crash.")
 def tc22(page, ctx):
     tmp = OUT / "upload_fixtures"
-    bad = pd.read_csv(ROOT / "dataset" / "sekolah.csv").drop(columns=["Quota"])
+    bad = pd.read_csv(ROOT / "dataset" / "schools.csv").drop(columns=["Quota"])
     bad.to_csv(tmp / "sekolah_tanpa_kuota.csv", index=False)
     uploads = sidebar(page).locator('[data-testid="stFileUploader"] input[type="file"]')
     uploads.nth(0).set_input_files(str(tmp / "sekolah_tanpa_kuota.csv"))

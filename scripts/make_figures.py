@@ -3,7 +3,7 @@ Regenerate every figure and results table used in README.md, with the same
 functions the Streamlit app calls.
 
 Run from the project root:  python scripts/make_figures.py
-Outputs: docs/figures/*.png (300 DPI) and docs/results/*.csv
+Outputs: docs/figures/*.png (300 DPI) and results/*.csv
 """
 import sys
 import time
@@ -19,13 +19,13 @@ import numpy as np  # noqa: E402
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from zonasi import data, maps, solver  # noqa: E402
-from zonasi import experiments as ex  # noqa: E402
-from zonasi.charts import AXIS, GRID, MUTED, SERIES, SURFACE, TEXT, TEXT_2  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
+from lexzon import data, maps, solver  # noqa: E402
+from lexzon import experiments as ex  # noqa: E402
+from lexzon.charts import AXIS, GRID, MUTED, SERIES, SURFACE, TEXT, TEXT_2  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
 
 FIG = ROOT / "docs" / "figures"
-RES = ROOT / "docs" / "results"
+RES = ROOT / "results"
 RADIUS = 1.0
 SEEDS = 30
 RADII = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0, None]

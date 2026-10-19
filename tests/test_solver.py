@@ -7,8 +7,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from zonasi import baselines, data, solver  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
+from lexzon import baselines, data, solver  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
 
 
 def brute_force_lexicographic(dist, quotas, radius):
@@ -110,7 +110,7 @@ def test_forced_assignment_infeasible_when_seats_short():
 
 
 def test_bordering_schools_never_share_confusable_colors():
-    from zonasi import maps
+    from lexzon import maps
 
     schools, _, _ = data.load_bundled("Main dataset (original quotas)")
     assert maps.neighbour_clashes(schools, maps.school_colors(schools)) == []

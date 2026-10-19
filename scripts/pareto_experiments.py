@@ -7,7 +7,7 @@ students at the maximum number of admissions (LEXZON's N*). Each point reports
 the best allocation found and the solver's proven bound.
 
 Run from the project root:  python scripts/pareto_experiments.py
-Output: docs/results/pareto/pareto_points.csv (appended after every solve)
+Output: results/pareto/pareto_points.csv (appended after every solve)
 """
 import sys
 import time
@@ -19,10 +19,10 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from zonasi import baselines, data, fairness, pareto, solver  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
+from lexzon import baselines, data, fairness, pareto, solver  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
 
-OUT = ROOT / "docs" / "results" / "pareto"
+OUT = ROOT / "results" / "pareto"
 RADIUS = 1.0
 BUDGETS = [0, 10, 25, 50, 100, 150, 200, 300]
 LIMIT_K, LIMIT_MIN = 300, 900

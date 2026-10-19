@@ -13,7 +13,7 @@ For every instance the bottleneck stage (LEXZON) is compared with the
 minimum-total benchmark B5 at identical enrollment, which isolates the value of
 Stage 2.
 
-Output: docs/results/revision/instance_families.csv
+Output: results/revision/instance_families.csv
 """
 import sys
 from pathlib import Path
@@ -23,15 +23,15 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from zonasi import solver  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
+from lexzon import solver  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
 
 N_STUDENTS = 1209
 RADII = (0.75, 1.0, 1.5)
 CONCENTRATIONS = ("clustered", "mixed", "uniform")
 SEEDS = (1, 2, 3, 4, 5)
 JITTER_KM = 0.15
-OUT = ROOT / "docs" / "results" / "revision"
+OUT = ROOT / "results" / "revision"
 
 
 def make_students(base, kind, rng):
@@ -55,8 +55,8 @@ def make_students(base, kind, rng):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    schools = pd.read_csv(ROOT / "dataset" / "skenario_2_kuota_lebih" / "sekolah.csv")
-    base = pd.read_csv(ROOT / "dataset" / "skenario_2_kuota_lebih" / "dataset_siswa.csv")
+    schools = pd.read_csv(ROOT / "dataset" / "scenario_2_surplus" / "schools.csv")
+    base = pd.read_csv(ROOT / "dataset" / "scenario_2_surplus" / "students.csv")
     quotas = schools["Quota"].to_numpy(dtype=int)
     rows = []
     for kind in CONCENTRATIONS:

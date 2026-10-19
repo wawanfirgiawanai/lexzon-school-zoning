@@ -11,8 +11,8 @@ assignment student by student:
 For the moved students the change in travel distance is reported as a
 distribution, together with how many of them experience a priority violation.
 
-Output: docs/results/revision/reassignment_cost.csv
-        docs/results/revision/reassignment_extra_km.csv   (per-student values)
+Output: results/revision/reassignment_cost.csv
+        results/revision/reassignment_extra_km.csv   (per-student values)
 """
 import sys
 from pathlib import Path
@@ -22,14 +22,14 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from zonasi import baselines, solver  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
-from zonasi.fairness import priority_violations  # noqa: E402
-from zonasi.solver import UNASSIGNED  # noqa: E402
+from lexzon import baselines, solver  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
+from lexzon.fairness import priority_violations  # noqa: E402
+from lexzon.solver import UNASSIGNED  # noqa: E402
 
 RADIUS = 1.0
-SCENARIOS = {"S1": "skenario_1_kuota_pas", "S2": "skenario_2_kuota_lebih", "S3": "skenario_3_kuota_kurang"}
-OUT = ROOT / "docs" / "results" / "revision"
+SCENARIOS = {"S1": "scenario_1_matched", "S2": "scenario_2_surplus", "S3": "scenario_3_insufficient"}
+OUT = ROOT / "results" / "revision"
 
 
 def q(a, p):
@@ -40,8 +40,8 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     rows, per_student = [], []
     for scen, folder in SCENARIOS.items():
-        schools = pd.read_csv(ROOT / "dataset" / folder / "sekolah.csv")
-        students = pd.read_csv(ROOT / "dataset" / folder / "dataset_siswa.csv")
+        schools = pd.read_csv(ROOT / "dataset" / folder / "schools.csv")
+        students = pd.read_csv(ROOT / "dataset" / folder / "students.csv")
         dist = haversine_matrix(students, schools)
         quotas = schools["Quota"].to_numpy(dtype=int)
         lex = solver.proposed(dist, quotas, RADIUS).assignment

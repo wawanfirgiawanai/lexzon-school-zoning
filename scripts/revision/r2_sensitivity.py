@@ -11,9 +11,9 @@ Three assumptions are varied, one at a time, around the surplus scenario S2:
               lottery), which changes deferred acceptance and the violation
               count but not the LEXZON assignment.
 
-Output: docs/results/revision/sensitivity_capacity.csv
-        docs/results/revision/sensitivity_access.csv
-        docs/results/revision/sensitivity_priority.csv
+Output: results/revision/sensitivity_capacity.csv
+        results/revision/sensitivity_access.csv
+        results/revision/sensitivity_priority.csv
 """
 import sys
 from pathlib import Path
@@ -23,17 +23,17 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from zonasi import baselines, solver  # noqa: E402
-from zonasi.data import scale_quotas  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
-from zonasi.fairness import priority_violations  # noqa: E402
+from lexzon import baselines, solver  # noqa: E402
+from lexzon.data import scale_quotas  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
+from lexzon.fairness import priority_violations  # noqa: E402
 
 RADIUS = 1.0
-FOLDER = "skenario_2_kuota_lebih"
+FOLDER = "scenario_2_surplus"
 CAPACITY_FACTORS = (0.85, 0.90, 0.95, 1.00, 1.05, 1.10, 1.15)
 DETOURS = (1.00, 1.10, 1.20, 1.30, 1.40)
 SEEDS = (1, 2, 3, 4, 5)
-OUT = ROOT / "docs" / "results" / "revision"
+OUT = ROOT / "results" / "revision"
 
 
 def summarise(dist, quotas, radius, assignment):
@@ -120,8 +120,8 @@ def priority_study(dist, schools):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    schools = pd.read_csv(ROOT / "dataset" / FOLDER / "sekolah.csv")
-    students = pd.read_csv(ROOT / "dataset" / FOLDER / "dataset_siswa.csv")
+    schools = pd.read_csv(ROOT / "dataset" / FOLDER / "schools.csv")
+    students = pd.read_csv(ROOT / "dataset" / FOLDER / "students.csv")
     dist = haversine_matrix(students, schools)
     capacity_study(dist, schools, students).to_csv(OUT / "sensitivity_capacity.csv", index=False)
     access_study(dist, schools).to_csv(OUT / "sensitivity_access.csv", index=False)

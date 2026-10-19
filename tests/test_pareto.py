@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from zonasi import baselines, fairness, pareto, solver
+from lexzon import baselines, fairness, pareto, solver
 
 
 def instance(seed, n=30, m=4):

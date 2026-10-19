@@ -3,6 +3,11 @@
 This folder holds the **public** part of the input data: the locations and
 capacities of the 28 public elementary schools, for each capacity scenario.
 
+Each capacity scenario has its own folder (`scenario_1_matched`,
+`scenario_2_surplus`, `scenario_3_insufficient`) holding `schools.csv`.
+A run that needs the applicants expects a `students.csv` beside each
+`schools.csv`; those files are ignored by git and are never committed.
+
 The applicant home locations are personal data and are deliberately absent. The
 scripts that need them (`scenario_experiments.py`, `fairness_experiments.py`,
 `pareto_experiments.py`, the map figures and the Streamlit app) therefore do not

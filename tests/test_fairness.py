@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from zonasi import baselines, data, fairness, solver
-from zonasi.distance import haversine_matrix
+from lexzon import baselines, data, fairness, solver
+from lexzon.distance import haversine_matrix
 
 
 def random_instance(seed, n=40, m=5):

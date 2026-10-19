@@ -3,7 +3,7 @@ Metrics of the LEXZON-F allocations saved by pareto_experiments.py (fewest
 students with justified envy among allocations admitting N* students).
 
 Run from the project root after pareto_experiments.py:  python scripts/lexzon_f_metrics.py
-Output: docs/results/pareto/lexzon_f_metrics.csv
+Output: results/pareto/lexzon_f_metrics.csv
 """
 import sys
 from pathlib import Path
@@ -14,11 +14,11 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from zonasi import data, fairness, solver  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
-from zonasi.metrics import evaluate  # noqa: E402
+from lexzon import data, fairness, solver  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
+from lexzon.metrics import evaluate  # noqa: E402
 
-OUT = ROOT / "docs" / "results" / "pareto"
+OUT = ROOT / "results" / "pareto"
 RADIUS = 1.0
 
 

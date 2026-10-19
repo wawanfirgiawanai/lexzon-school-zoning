@@ -9,7 +9,7 @@ stated explicitly. Density is varied in two independent ways:
   schools  the school network is replicated with a small offset, which raises
            the degree without changing the radius.
 
-Output: docs/results/revision/density_scalability.csv
+Output: results/revision/density_scalability.csv
 """
 import sys
 from pathlib import Path
@@ -19,15 +19,15 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from zonasi import baselines, data, solver  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
+from lexzon import baselines, data, solver  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
 
 SIZES = (5_000, 20_000)
 RADII = (0.5, 0.75, 1.0, 1.5, 2.0, 3.0)
 REPLICAS = (1, 2, 3)          # copies of the 28-school network
 SEED = 42
 REPEATS = 3
-OUT = ROOT / "docs" / "results" / "revision"
+OUT = ROOT / "results" / "revision"
 
 
 def replicate(schools, copies):
@@ -54,8 +54,8 @@ def timed(dist, quotas, radius):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    schools0 = pd.read_csv(ROOT / "dataset" / "skenario_2_kuota_lebih" / "sekolah.csv")
-    students0 = pd.read_csv(ROOT / "dataset" / "skenario_2_kuota_lebih" / "dataset_siswa.csv")
+    schools0 = pd.read_csv(ROOT / "dataset" / "scenario_2_surplus" / "schools.csv")
+    students0 = pd.read_csv(ROOT / "dataset" / "scenario_2_surplus" / "students.csv")
     rows = []
     for n in SIZES:
         rng = np.random.default_rng(SEED)

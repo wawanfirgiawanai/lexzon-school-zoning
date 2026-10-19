@@ -1,12 +1,13 @@
 """Rebuild every manuscript figure as SVG (with a PNG fallback) from the project data.
 
 Figure 1  framework diagram
-Figure 2  unassigned students by method (docs/results/scenarios/S*_comparison.csv + fairness/b7_comparison.csv)
+Figure 2  unassigned students by method (results/scenarios/S*_comparison.csv + fairness/b7_comparison.csv)
 Figure 3  LEXZON zoning map, S2 (dataset + solver)
 Figure 4  school-highlighting views, S2 (dataset + solver)
-Figure 5  radius sensitivity (docs/results/scenarios/S*_radius.csv)
-Figure 6  enrollment gain under violation budgets (docs/results/pareto_ortools915/pareto_points.csv)
+Figure 5  radius sensitivity (results/scenarios/S*_radius.csv)
+Figure 6  enrollment gain under violation budgets (results/pareto_ortools915/pareto_points.csv)
 """
+import os
 import sys
 from pathlib import Path
 
@@ -19,12 +20,13 @@ from matplotlib.collections import LineCollection
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
-ROOT = Path(r"C:\Users\Wawan Firgiawan\OneDrive\Documents\PROJECT\PENELITIAN\Zonasi_2")
-RES = ROOT / "docs" / "results"
+# Repository root. Set LEXZON_ROOT to run against data kept outside the repository.
+ROOT = Path(os.environ.get("LEXZON_ROOT", Path(__file__).resolve().parents[1]))
+RES = ROOT / "results"
 OUT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
-from zonasi import maps, solver  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
+from lexzon import maps, solver  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
 
 # IJIES asks for at least 10 pt inside figures. Each figure below is drawn at the
 # width at which it is placed in the manuscript, so the sizes set here are also
@@ -149,8 +151,8 @@ def figure2():
 
 # ---------------------------------------------------------------- Figures 3 and 4: maps
 def _s2_allocation():
-    sch = pd.read_csv(ROOT / "dataset" / "skenario_2_kuota_lebih" / "sekolah.csv")
-    stu = pd.read_csv(ROOT / "dataset" / "skenario_2_kuota_lebih" / "dataset_siswa.csv")
+    sch = pd.read_csv(ROOT / "dataset" / "scenario_2_surplus" / "schools.csv")
+    stu = pd.read_csv(ROOT / "dataset" / "scenario_2_surplus" / "students.csv")
     dist = haversine_matrix(stu, sch)
     alloc = solver.proposed(dist, sch["Quota"].to_numpy(int), 1.0)
     return sch, stu, dist, alloc.assignment

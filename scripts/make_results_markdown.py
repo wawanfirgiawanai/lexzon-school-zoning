@@ -1,16 +1,18 @@
 """Generate the Markdown results/formula/methods document from the experiment CSVs."""
+import os
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-ROOT = Path(r"C:\Users\Wawan Firgiawan\OneDrive\Documents\PROJECT\PENELITIAN\Zonasi_2")
-R = ROOT / "docs" / "results"
-OUT = ROOT / "Document" / "Hasil_Pengujian_Rumus_Metode_LEXZON.md"
+# Repository root. Set LEXZON_ROOT to run against data kept outside the repository.
+ROOT = Path(os.environ.get("LEXZON_ROOT", Path(__file__).resolve().parents[1]))
+R = ROOT / "results"
+OUT = ROOT / "results" / "RESULTS.md"
 SC = ["S1", "S2", "S3"]
-NAME = {"P": "LEXZON", "B1": "B1 Sekolah terdekat (kuota diabaikan)", "B2": "B2 Greedy terdekat",
-        "B3": "B3 Greedy urutan acak (rata-rata 30 seed)", "B4": "B4 Deferred acceptance",
-        "B5": "B5 Eksak total jarak minimum", "B6": "B6 Eksak jarak terjauh minimum",
+NAME = {"P": "LEXZON", "B1": "B1 Nearest school (capacity ignored)", "B2": "B2 Distance-ordered greedy",
+        "B3": "B3 Random-order greedy (mean of 30 seeds)", "B4": "B4 Deferred acceptance",
+        "B5": "B5 Exact minimum total distance", "B6": "B6 Exact minimum maximum distance",
         "B7": "B7 Constrained k-means", "LEXZON": "LEXZON", "LEXZON-F": "LEXZON-F"}
 
 
@@ -18,8 +20,8 @@ def f(v, d=3):
     if v is None or (isinstance(v, float) and np.isnan(v)):
         return "–"
     if isinstance(v, (int, np.integer)) or float(v).is_integer():
-        return f"{int(round(float(v))):,}".replace(",", ".")
-    return f"{float(v):,.{d}f}".replace(",", "_").replace(".", ",").replace("_", ".")
+        return f"{int(round(float(v))):,}"
+    return f"{float(v):,.{d}f}"
 
 
 def table(headers, rows):
@@ -31,182 +33,203 @@ def table(headers, rows):
 md = []
 w = md.append
 
-w("# LEXZON: Hasil Pengujian, Rumus, dan Bab Material dan Metode\n")
-w("Dokumen ini berisi tabel hasil pengujian (siap divisualisasikan), rumus, dan bab Material dan Metode. "
-  "Semua angka diambil langsung dari berkas hasil eksperimen di `docs/results/`. Radius zonasi R = 1 km "
-  "kecuali disebutkan lain. Format angka: titik = pemisah ribuan, koma = desimal.\n")
-w("**Singkatan:** TT = siswa tidak tertampung; N* = batas atas penerimaan (aliran maksimum); "
-  "z* = jarak terjauh minimum; S1/S2/S3 = skenario kuota pas/lebih/kurang.\n")
+w("# LEXZON: results, formulas, and the materials and methods section\n")
+w("This document holds the result tables (ready to plot), the formulas, and the materials and methods "
+  "section. Every number is read directly from the experiment files in `results/`. The zoning radius is "
+  "R = 1 km unless stated otherwise.\n")
+w("**Abbreviations:** UA = unassigned applicants; N* = the enrollment upper bound (maximum flow); "
+  "z* = the minimum maximum distance; S1/S2/S3 = the matched/surplus/insufficient capacity scenarios.\n")
 
-# ============================================================ MATERIAL & METODE
-w("\n---\n\n# Bagian A. Material dan Metode\n")
-w("## A.1 Material (data)\n")
-w("Data berisi lokasi rumah **1.209 calon siswa** serta lokasi dan kuota **28 sekolah dasar negeri** di wilayah "
-  "perkotaan Kabupaten Majene, Sulawesi Barat (cakupan ±5 km × 6 km). Nama siswa dan sekolah dianonimkan "
-  "(Student 0001, School 01, ...); hanya koordinat (lintang, bujur) dan kuota yang digunakan.\n")
-w("### Tabel A1. Karakteristik data\n")
-w(table(["Besaran", "Nilai"], [
-    ["Jumlah calon siswa", "1.209"], ["Jumlah sekolah dasar", "28"],
-    ["Pasangan siswa–sekolah seluruhnya", "33.852"], ["Pasangan layak (jarak ≤ 1 km)", "6.641"],
-    ["Rata-rata sekolah dalam radius per siswa", "5,5 (median 5, maks. 10)"],
-    ["Siswa tanpa sekolah dalam radius 1 km", "3"],
-    ["Median jarak ke sekolah terdekat", "0,185 km"], ["Jarak terdekat terbesar", "1,105 km"]]))
+# ============================================================ MATERIALS AND METHODS
+w("\n---\n\n# Part A. Materials and methods\n")
+w("## A.1 Materials (data)\n")
+w("The data hold the home locations of **1,209 applicants** together with the locations and capacities of "
+  "**28 public elementary schools** in the urban area of Majene Regency, West Sulawesi (about 5 km x 6 km). "
+  "Applicant and school names are replaced by codes (Student 0001, School 01, ...); only the coordinates "
+  "(latitude, longitude) and the capacities are used.\n")
+w("### Table A1. Characteristics of the data\n")
+w(table(["Quantity", "Value"], [
+    ["Applicants", "1,209"], ["Elementary schools", "28"],
+    ["Applicant-school pairs in total", "33,852"], ["Eligible pairs (distance <= 1 km)", "6,641"],
+    ["Mean schools within the radius per applicant", "5.5 (median 5, max 10)"],
+    ["Applicants with no school within 1 km", "3"],
+    ["Median distance to the nearest school", "0.185 km"], ["Largest nearest-school distance", "1.105 km"]]))
 
 summ = pd.read_csv(R / "scenarios" / "scenario_summary.csv")
-w("### Tabel A2. Skenario kuota\n")
-desc = {"S1": "Kuota pas (kursi = siswa)", "S2": "Kuota lebih (kuota asli)", "S3": "Kuota kurang"}
-src = {"S1": "Penskalaan mendekati proporsional kuota asli", "S2": "Data asli (1–3 rombel × 28)",
-       "S3": "Penskalaan mendekati proporsional kuota asli"}
+w("### Table A2. Capacity scenarios\n")
+desc = {"S1": "Matched capacity (seats = applicants)", "S2": "Surplus capacity (recorded quotas)",
+        "S3": "Insufficient capacity"}
+src = {"S1": "Approximately proportional scaling of the recorded quotas", "S2": "Recorded data (1-3 classes x 28)",
+       "S3": "Approximately proportional scaling of the recorded quotas"}
 rows = []
 for _, r in summ.iterrows():
     rows.append([r["Scenario"], desc[r["Scenario"]], f(r["Seats"]), f(r["Seats"] / r["Students"], 2),
-                 r["Quota values"].replace(", ", "–") if r["Scenario"] != "S2" else "28 / 56 / 84", src[r["Scenario"]]])
-w(table(["Skenario", "Keterangan", "Total kursi", "Kursi/siswa", "Kuota per sekolah", "Sumber"], rows))
+                 r["Quota values"].replace(", ", "-") if r["Scenario"] != "S2" else "28 / 56 / 84", src[r["Scenario"]]])
+w(table(["Scenario", "Description", "Total seats", "Seats per applicant", "Capacity per school", "Source"], rows))
 
-w("## A.2 Kerangka kerja sistem\n")
-w(table(["Lapisan", "Komponen", "Keluaran"], [
-    ["1. Data dan praproses", "Validasi CSV, anonimisasi, jarak Haversine, pasangan layak E_R", "Matriks jarak d_ij, E_R"],
-    ["2. Optimasi LEXZON", "Tahap 1 aliran maksimum → Tahap 2 bisection → Tahap 3 aliran biaya minimum", "Alokasi x, N*, z*"],
-    ["3. Verifikasi dan audit", "Sertifikat optimalitas, penyebab siswa ×, pelanggaran prioritas, kurva harga keadilan, LEXZON-F", "Bukti optimal, audit keadilan"],
-    ["4. Pendukung keputusan", "Peta interaktif, simulasi radius/kuota/+1 rombel, ekspor", "Peta, tabel, berkas"]]))
+w("## A.2 System framework\n")
+w(table(["Layer", "Component", "Output"], [
+    ["1. Data and preprocessing", "CSV validation, anonymization, Haversine distances, eligible pairs E_R",
+     "Distance matrix d_ij, E_R"],
+    ["2. LEXZON optimization", "Stage 1 maximum flow -> Stage 2 bisection -> Stage 3 minimum-cost flow",
+     "Assignment x, N*, z*"],
+    ["3. Verification and audit",
+     "Optimality certificates, cause of each unassigned applicant, priority violations, price-of-fairness curve, LEXZON-F",
+     "Proof of optimality, fairness audit"],
+    ["4. Decision support", "Interactive map, radius/capacity/extra-class simulation, export",
+     "Map, tables, files"]]))
 
-w("## A.3 Metode usulan: LEXZON (Lexicographic Exact Zoning)\n")
-w("LEXZON menyelesaikan tiga tujuan secara berurutan (leksikografis); keluaran setiap tahap menjadi kendala "
-  "bagi tahap berikutnya:\n")
-w("1. **Tahap 1 – Penerimaan maksimum.** Aliran maksimum (algoritma Dinic) pada jaringan sumber → siswa "
-  "(kapasitas 1) → sekolah dalam radius (kapasitas 1) → tujuan (kapasitas q_j). Hasil: N*.\n"
-  "2. **Tahap 2 – Jarak terjauh minimum.** Pencarian biner (bisection) atas jarak unik; setiap langkah menguji "
-  "apakah aliran maksimum dengan pasangan berjarak ≤ t masih bernilai N*. Hasil: z*.\n"
-  "3. **Tahap 3 – Total jarak minimum.** Aliran biaya minimum yang mengalirkan tepat N* siswa pada pasangan "
-  "berjarak ≤ z*, diselesaikan dengan dual simplex HiGHS (matriks unimodular total ⇒ solusi LP integral).\n"
-  "4. **Sertifikat optimalitas.** F(R) = F(z*) = N* dan F(z⁻) < N*, ditambah integralitas Tahap 3.\n"
-  "5. **Penandaan ×.** Siswa tidak tertampung diberi penyebab: tidak ada sekolah dalam radius, atau semua "
-  "sekolah dalam radius penuh.\n")
+w("## A.3 Proposed method: LEXZON (Lexicographic Exact Zoning)\n")
+w("LEXZON solves three objectives in sequence (lexicographically); the output of each stage becomes a "
+  "constraint for the next one:\n")
+w("1. **Stage 1 - Maximum enrollment.** Maximum flow (Dinic's algorithm) on the network source -> applicants "
+  "(capacity 1) -> schools within the radius (capacity 1) -> sink (capacity q_j). Result: N*.\n"
+  "2. **Stage 2 - Minimum maximum distance.** Bisection over the distinct distances; each step tests whether "
+  "the maximum flow restricted to pairs at distance <= t still equals N*. Result: z*.\n"
+  "3. **Stage 3 - Minimum total distance.** A minimum-cost flow that routes exactly N* applicants over pairs "
+  "at distance <= z*, solved with the HiGHS dual simplex method; the constraint matrix is totally unimodular, "
+  "so the LP solution is integral.\n"
+  "4. **Optimality certificates.** F(R) = F(z*) = N* and F(z-) < N*, together with the integrality of Stage 3.\n"
+  "5. **Labelling the unassigned.** Every unassigned applicant is labelled with its cause: no school within "
+  "the radius, or every school within the radius is full.\n")
 
-w("### Algoritma 1. LEXZON\n")
-w("```text\nMasukan : jarak d_ij, kuota q_j, radius R\nKeluaran: alokasi x, N*, z*, sertifikat\n"
-  " 1: E_R ← {(i, j) : d_ij ≤ R}\n"
-  " 2: N* ← AliranMaks(E_R, q)                         // Tahap 1\n"
-  " 3: D  ← jarak unik terurut pada E_R; lo ← 1; hi ← |D|\n"
-  " 4: selama lo < hi lakukan                           // Tahap 2\n"
-  " 5:     mid ← ⌊(lo + hi) / 2⌋\n"
-  " 6:     jika AliranMaks(E_D[mid], q) = N* maka hi ← mid selainnya lo ← mid + 1\n"
-  " 7: z* ← D[lo]\n"
-  " 8: x ← AliranBiayaMin(E_z*, q, nilai aliran N*)       // Tahap 3\n"
-  " 9: untuk setiap siswa i tanpa pasangan terpilih lakukan tandai ×\n"
-  "10:     penyebab ← tidak ada sekolah dalam R, atau semua sekolah dalam R penuh\n"
-  "11: kembalikan x, N*, z*, (F(R), F(z*), F(z⁻))\n```\n")
+w("### Algorithm 1. LEXZON\n")
+w("```text\nInput : distances d_ij, capacities q_j, radius R\nOutput: assignment x, N*, z*, certificates\n"
+  " 1: E_R <- {(i, j) : d_ij <= R}\n"
+  " 2: N* <- MaxFlow(E_R, q)                            // Stage 1\n"
+  " 3: D  <- sorted distinct distances over E_R; lo <- 1; hi <- |D|\n"
+  " 4: while lo < hi do                                 // Stage 2\n"
+  " 5:     mid <- floor((lo + hi) / 2)\n"
+  " 6:     if MaxFlow(E_D[mid], q) = N* then hi <- mid else lo <- mid + 1\n"
+  " 7: z* <- D[lo]\n"
+  " 8: x <- MinCostFlow(E_z*, q, flow value N*)          // Stage 3\n"
+  " 9: for every applicant i left without a pair do mark unassigned\n"
+  "10:     cause <- no school within R, or every school within R is full\n"
+  "11: return x, N*, z*, (F(R), F(z*), F(z-))\n```\n")
 
-w("### Algoritma 2. Kurva harga keadilan dan LEXZON-F\n")
-w("```text\nMasukan : d_ij, q_j, R, batas pelanggaran K = {k1 < k2 < …}, batas waktu τ\n"
-  "Keluaran: kurva {(k, A(k))}, alokasi LEXZON-F\n"
-  "1: μ_L ← LEXZON(d, q, R);  μ_D ← DeferredAcceptance(d, q, R)\n"
-  "2: bangun kendala (7), (8), (15) untuk semua (i, j) ∈ E_R\n"
-  "3: (μ_F, ε_F) ← selesaikan (17) dengan solusi awal μ_L, batas waktu τ\n"
-  "4: μ ← μ_D; catat (0, |μ_D|)                         // Proposisi 2\n"
-  "5: untuk k ∈ K dengan 0 < k < ε_F lakukan\n"
-  "6:     μ ← selesaikan (16) dengan solusi awal μ, batas waktu τ\n"
-  "7:     catat (k, |μ|, batas atas solver)\n"
-  "8: catat (ε_F, N*); kembalikan kurva dan μ_F\n```\n")
+w("### Algorithm 2. Price-of-fairness curve and LEXZON-F\n")
+w("```text\nInput : d_ij, q_j, R, violation budgets K = {k1 < k2 < ...}, time limit tau\n"
+  "Output: curve {(k, A(k))}, LEXZON-F assignment\n"
+  "1: mu_L <- LEXZON(d, q, R);  mu_D <- DeferredAcceptance(d, q, R)\n"
+  "2: build constraints (7), (8), (15) for every (i, j) in E_R\n"
+  "3: (mu_F, eps_F) <- solve (17) warm-started at mu_L, time limit tau\n"
+  "4: mu <- mu_D; record (0, |mu_D|)                     // Proposition 2\n"
+  "5: for k in K with 0 < k < eps_F do\n"
+  "6:     mu <- solve (16) warm-started at mu, time limit tau\n"
+  "7:     record (k, |mu|, solver bound)\n"
+  "8: record (eps_F, N*); return the curve and mu_F\n```\n")
 
-w("## A.4 Metode pembanding\n")
-w(table(["Kode", "Metode", "Cara kerja", "Peran"], [
-    ["B1", "Sekolah terdekat", "Setiap siswa ke sekolah terdekat dalam radius, kuota diabaikan", "Acuan (tidak layak)"],
-    ["B2", "Greedy terdekat", "Siswa terdekat diproses dahulu, masuk sekolah terdekat yang masih ada kursi", "Aturan manual umum"],
-    ["B3", "Greedy acak", "Aturan B2 dengan urutan acak, rata-rata 30 seed", "Siapa cepat dia dapat"],
-    ["B4", "Deferred acceptance", "Siswa melamar sekolah terdekat; sekolah menahan pendaftar terdekat", "Seleksi jarak PPDB/SPMB (stabil)"],
-    ["B5", "Eksak total jarak minimum", "Tahap 1 + Tahap 3 (tanpa Tahap 2)", "Uji perlunya Tahap 2"],
-    ["B6", "Eksak jarak terjauh minimum", "Tahap 1 + Tahap 2 (tanpa Tahap 3)", "Uji perlunya Tahap 3"],
-    ["B7", "Constrained k-means", "Klaster seimbang berkapasitas (Zainuddin dan Risal, 2024)", "Metode studi zonasi Indonesia"]]))
+w("## A.4 Comparison methods\n")
+w(table(["Code", "Method", "How it works", "Role"], [
+    ["B1", "Nearest school", "Every applicant to the nearest school within the radius, capacity ignored",
+     "Reference (infeasible)"],
+    ["B2", "Distance-ordered greedy",
+     "The nearest applicant is served first and takes the nearest school with a free seat", "Common manual rule"],
+    ["B3", "Random-order greedy", "The B2 rule in random order, averaged over 30 seeds", "First come, first served"],
+    ["B4", "Deferred acceptance", "Applicants propose to their nearest school; schools hold the nearest applicants",
+     "Distance-based admission (stable)"],
+    ["B5", "Exact minimum total distance", "Stage 1 + Stage 3 (without Stage 2)", "Tests whether Stage 2 is needed"],
+    ["B6", "Exact minimum maximum distance", "Stage 1 + Stage 2 (without Stage 3)", "Tests whether Stage 3 is needed"],
+    ["B7", "Constrained k-means", "Balanced capacitated clustering (Zainuddin and Risal, 2024)",
+     "Method used in Indonesian zoning studies"]]))
 
-w("## A.5 Studi ablasi\n")
-w("Setiap konfigurasi menambahkan satu komponen. Radius dan izin tidak ditempatkan masuk bersamaan pada A2, karena "
-  "tiga siswa tidak memiliki sekolah dalam 1 km sehingga radius tanpa izin tidak ditempatkan tidak memiliki solusi. "
-  "Objektif A2 dan A3 bersifat **leksikografis**: jumlah siswa diterima dimaksimalkan terlebih dahulu, sehingga "
-  "alokasi kosong tidak mungkin menjadi optimum.\n")
-w(table(["Kode", "Kendala penempatan", "Jarak", "Radius", "Objektif (berurutan)", "Setara dengan"], [
-    ["A0", "Semua siswa wajib ditempatkan (Σ_j x_ij = 1)", "Euclidean (derajat)", "Tidak ada", "min total jarak", "Model awal tesis"],
-    ["A1", "Semua siswa wajib ditempatkan (Σ_j x_ij = 1)", "Haversine (km)", "Tidak ada", "min total jarak", "–"],
-    ["A2", "Boleh tidak ditempatkan (Σ_j x_ij ≤ 1)", "Haversine (km)", "R = 1 km", "(1) maks. diterima → (2) min total jarak", "B5"],
-    ["A3", "Boleh tidak ditempatkan (Σ_j x_ij ≤ 1)", "Haversine (km)", "R = 1 km", "(1) maks. diterima → (2) min jarak terjauh → (3) min total jarak", "LEXZON"]]))
+w("## A.5 Ablation study\n")
+w("Each configuration adds one component. The radius and the option to leave applicants unassigned are not "
+  "introduced separately in A2, because three applicants have no school within 1 km, so a radius without that "
+  "option has no solution. The objectives of A2 and A3 are **lexicographic**: enrollment is maximized first, "
+  "so an empty assignment can never be optimal.\n")
+w(table(["Code", "Placement constraint", "Distance", "Radius", "Objectives (in order)", "Equivalent to"], [
+    ["A0", "Every applicant must be placed (sum_j x_ij = 1)", "Euclidean (degrees)", "None", "min total distance",
+     "Initial thesis model"],
+    ["A1", "Every applicant must be placed (sum_j x_ij = 1)", "Haversine (km)", "None", "min total distance", "–"],
+    ["A2", "Applicants may stay unassigned (sum_j x_ij <= 1)", "Haversine (km)", "R = 1 km",
+     "(1) max enrollment -> (2) min total distance", "B5"],
+    ["A3", "Applicants may stay unassigned (sum_j x_ij <= 1)", "Haversine (km)", "R = 1 km",
+     "(1) max enrollment -> (2) min maximum distance -> (3) min total distance", "LEXZON"]]))
 
-w("## A.6 Metrik evaluasi\n")
-w(table(["Metrik", "Definisi"], [
-    ["Tidak tertampung (TT)", "Jumlah siswa tanpa sekolah; dipisah: tanpa sekolah dalam radius / sekolah penuh"],
-    ["Selisih terhadap N*", "N* − jumlah siswa diterima (0 = optimal)"],
-    ["Melebihi kuota", "Jumlah siswa yang ditempatkan di atas kuota (kelayakan)"],
-    ["Rata-rata / maks / total jarak", "Jarak Haversine siswa diterima ke sekolahnya (km)"],
-    ["Pelanggaran prioritas (justified envy)", "Siswa yang lebih memilih sekolah dalam radius yang masih ada kursi atau menerima siswa lebih jauh"],
-    ["Waktu komputasi", "Detik (median tiga pengulangan untuk skalabilitas)"]]))
+w("## A.6 Evaluation metrics\n")
+w(table(["Metric", "Definition"], [
+    ["Unassigned (UA)",
+     "Applicants left without a school, split into no school within the radius / every school full"],
+    ["Gap to N*", "N* minus the number of assigned applicants (0 = optimal)"],
+    ["Capacity overflow", "Applicants placed beyond the capacity of a school (feasibility)"],
+    ["Mean / max / total distance", "Haversine distance from an assigned applicant to its school (km)"],
+    ["Priority violations (justified envy)",
+     "Applicants who prefer a school within the radius that still has a free seat or admits a farther applicant"],
+    ["Runtime", "Seconds (median of three repetitions for the scalability study)"]]))
 
-w("## A.7 Protokol pengujian\n")
-w(table(["No", "Pengujian", "Pengaturan"], [
-    ["1", "Perbandingan metode", "3 skenario, R = 1 km, 8 metode"],
-    ["2", "Studi ablasi", "S1, S2, S3; A0–A3"],
-    ["3", "Sensitivitas radius", "R = 0,5; 0,75; 1; 1,25; 1,5; 2; 3 km; tanpa radius"],
-    ["4", "Uji statistik", "30 sampel ulang (80% siswa, seed 42 + nomor), kuota diskalakan; Wilcoxon satu sisi, α = 0,05"],
-    ["5", "Skalabilitas", "1.000–50.000 siswa sintetis (lokasi nyata + gangguan Gaussian 150 m), median 3 pengulangan"],
-    ["6", "Keadilan prioritas jarak", "Justified envy untuk semua metode, data penuh dan 90 sampel ulang"],
-    ["7", "Harga keadilan", "k ∈ {0, 10, 25, 50, 100, 150, 200}; 300 detik per titik; LEXZON-F 900 detik (CP-SAT)"],
-    ["8", "Simulasi kebijakan", "+1 rombel (28 kursi) di setiap sekolah bergantian"],
-    ["9", "Pengujian perangkat lunak", "126 uji unit (pytest) + 22 uji end-to-end (Playwright)"]]))
+w("## A.7 Experimental protocol\n")
+w(table(["No", "Experiment", "Setting"], [
+    ["1", "Method comparison", "3 scenarios, R = 1 km, 8 methods"],
+    ["2", "Ablation study", "S1, S2, S3; A0-A3"],
+    ["3", "Radius sensitivity", "R = 0.5, 0.75, 1, 1.25, 1.5, 2, 3 km; unrestricted"],
+    ["4", "Statistical test",
+     "30 subsamples (80% of the applicants, seed 42 + index), capacities scaled; one-sided Wilcoxon, alpha = 0.05"],
+    ["5", "Scalability",
+     "1,000-50,000 synthetic applicants (recorded locations plus Gaussian noise of 150 m), median of 3 repetitions"],
+    ["6", "Distance-priority fairness", "Justified envy for every method, on the full data and on 90 subsamples"],
+    ["7", "Price of fairness", "k in {0, 10, 25, 50, 100, 150, 200}; 300 s per point; LEXZON-F 900 s (CP-SAT)"],
+    ["8", "Policy simulation", "One extra class (28 seats) at each school in turn"],
+    ["9", "Software testing", "126 unit tests (pytest) + 22 end-to-end tests (Playwright)"]]))
 
-w("## A.8 Lingkungan implementasi\n")
-w(table(["Komponen", "Versi / spesifikasi"], [
-    ["Bahasa", "Python 3.11.9"], ["Numerik", "NumPy 1.26.4, SciPy 1.17.1, pandas 3.0.2"],
-    ["Aliran maksimum", "scipy.sparse.csgraph.maximum_flow (Dinic)"], ["LP/MILP", "HiGHS (dual simplex) via SciPy"],
-    ["Model harga keadilan", "Google OR-Tools CP-SAT"], ["Aplikasi", "Streamlit 1.57.0, Folium 0.20.0"],
-    ["Perangkat keras", "Intel Core i7-14650HX, RAM 16 GB, Windows 11"]]))
+w("## A.8 Implementation environment\n")
+w(table(["Component", "Version / specification"], [
+    ["Language", "Python 3.11.9"], ["Numerics", "NumPy 1.26.4, SciPy 1.17.1, pandas 3.0.2"],
+    ["Maximum flow", "scipy.sparse.csgraph.maximum_flow (Dinic)"],
+    ["LP/MILP", "HiGHS (dual simplex) through SciPy"],
+    ["Price-of-fairness model", "Google OR-Tools CP-SAT"], ["Application", "Streamlit 1.57.0, Folium 0.20.0"],
+    ["Hardware", "Intel Core i7-14650HX, 16 GB RAM, Windows 11"]]))
 
-# ============================================================ RUMUS
-w("\n---\n\n# Bagian B. Rumus\n")
+# ============================================================ FORMULAS
+w("\n---\n\n# Part B. Formulas\n")
 eqs = [
-    ("(1) Jarak Haversine", r"d_{ij} = 2\rho \arcsin\sqrt{a_{ij}}"),
-    ("(2) Komponen Haversine", r"a_{ij} = \sin^2\!\left(\frac{\Delta\varphi}{2}\right) + \cos\varphi_i \cos\varphi_j \sin^2\!\left(\frac{\Delta\lambda}{2}\right),\quad \rho = 6.371\ \text{km}"),
-    ("(3) Pasangan layak", r"E_R = \{(i,j) \in S \times C : d_{ij} \le R\}"),
-    ("(4) Tujuan leksikografis", r"\operatorname{lex\,max}_x \big(f_1(x),\ -f_2(x),\ -f_3(x)\big)"),
-    ("(5) Tujuan 1 dan 3", r"f_1(x) = \sum_{(i,j)\in E_R} x_{ij},\qquad f_3(x) = \sum_{(i,j)\in E_R} d_{ij}\,x_{ij}"),
-    ("(6) Tujuan 2", r"f_2(x) = \max_{(i,j)\in E_R} d_{ij}\,x_{ij}"),
-    ("(7) Kendala siswa", r"\sum_{j:(i,j)\in E_R} x_{ij} \le 1,\quad \forall i \in S"),
-    ("(8) Kendala kuota", r"\sum_{i:(i,j)\in E_R} x_{ij} \le q_j,\quad \forall j \in C,\quad x_{ij}\in\{0,1\}"),
-    ("(9) Aliran maksimum berambang", r"F(t) = \max\Big\{\sum_{d_{ij}\le t} x_{ij} : x \text{ layak}\Big\},\qquad N^* = F(R)"),
-    ("(10) Jarak terjauh minimum", r"z^* = \min\{t \in D_R : F(t) = N^*\}"),
-    ("(11) Total jarak minimum", r"\min \sum_{d_{ij}\le z^*} d_{ij}\,x_{ij}\quad \text{s.t. } \sum x_{ij} = N^*,\ (7),(8)"),
-    ("(12) Sertifikat optimalitas", r"F(z^*) = N^* \ \text{dan}\ F(z^-) < N^*"),
-    ("(13) Prioritas jarak", r"i \succ_j i' \Leftrightarrow d_{ij} < d_{i'j},\qquad j \succ_i j' \Leftrightarrow d_{ij} < d_{ij'}"),
-    ("(14) Pelanggaran prioritas", r"\varepsilon_i = 1 \Leftrightarrow \exists (i,j)\in E_R : j \succ_i \mu(i) \ \wedge\ \big(|\mu^{-1}(j)| < q_j \ \vee\ \exists i'\in\mu^{-1}(j): i \succ_j i'\big)"),
-    ("(15) Kestabilan berbobot", r"\sum_{i' \succ_j i} x_{i'j} + q_j \sum_{j' \succeq_i j} x_{ij'} \ge q_j\,(1 - y_i)"),
-    ("(16) Kurva harga keadilan", r"A(k) = \max \sum_{(i,j)\in E_R} x_{ij}\quad \text{s.t. } (7),(8),(15),\ \sum_i y_i \le k"),
+    ("(1) Haversine distance", r"d_{ij} = 2\rho \arcsin\sqrt{a_{ij}}"),
+    ("(2) Haversine component", r"a_{ij} = \sin^2\!\left(\frac{\Delta\varphi}{2}\right) + \cos\varphi_i \cos\varphi_j \sin^2\!\left(\frac{\Delta\lambda}{2}\right),\quad \rho = 6371\ \text{km}"),
+    ("(3) Eligible pairs", r"E_R = \{(i,j) \in S \times C : d_{ij} \le R\}"),
+    ("(4) Lexicographic objective", r"\operatorname{lex\,max}_x \big(f_1(x),\ -f_2(x),\ -f_3(x)\big)"),
+    ("(5) Objectives 1 and 3", r"f_1(x) = \sum_{(i,j)\in E_R} x_{ij},\qquad f_3(x) = \sum_{(i,j)\in E_R} d_{ij}\,x_{ij}"),
+    ("(6) Objective 2", r"f_2(x) = \max_{(i,j)\in E_R} d_{ij}\,x_{ij}"),
+    ("(7) Applicant constraint", r"\sum_{j:(i,j)\in E_R} x_{ij} \le 1,\quad \forall i \in S"),
+    ("(8) Capacity constraint", r"\sum_{i:(i,j)\in E_R} x_{ij} \le q_j,\quad \forall j \in C,\quad x_{ij}\in\{0,1\}"),
+    ("(9) Thresholded maximum flow", r"F(t) = \max\Big\{\sum_{d_{ij}\le t} x_{ij} : x \text{ feasible}\Big\},\qquad N^* = F(R)"),
+    ("(10) Minimum maximum distance", r"z^* = \min\{t \in D_R : F(t) = N^*\}"),
+    ("(11) Minimum total distance", r"\min \sum_{d_{ij}\le z^*} d_{ij}\,x_{ij}\quad \text{s.t. } \sum x_{ij} = N^*,\ (7),(8)"),
+    ("(12) Optimality certificate", r"F(z^*) = N^* \ \text{and}\ F(z^-) < N^*"),
+    ("(13) Distance priorities", r"i \succ_j i' \Leftrightarrow d_{ij} < d_{i'j},\qquad j \succ_i j' \Leftrightarrow d_{ij} < d_{ij'}"),
+    ("(14) Priority violation", r"\varepsilon_i = 1 \Leftrightarrow \exists (i,j)\in E_R : j \succ_i \mu(i) \ \wedge\ \big(|\mu^{-1}(j)| < q_j \ \vee\ \exists i'\in\mu^{-1}(j): i \succ_j i'\big)"),
+    ("(15) Weighted stability", r"\sum_{i' \succ_j i} x_{i'j} + q_j \sum_{j' \succeq_i j} x_{ij'} \ge q_j\,(1 - y_i)"),
+    ("(16) Price-of-fairness curve", r"A(k) = \max \sum_{(i,j)\in E_R} x_{ij}\quad \text{s.t. } (7),(8),(15),\ \sum_i y_i \le k"),
     ("(17) LEXZON-F", r"\varepsilon_F = \min \sum_i y_i\quad \text{s.t. } (7),(8),(15),\ \sum_{(i,j)\in E_R} x_{ij} = N^*"),
 ]
 for name, tex in eqs:
     w(f"**{name}**\n\n$$\n{tex}\n$$\n")
-w("**Metrik tambahan**\n\n$$\n\\text{Pengurangan TT}(\\%) = \\frac{TT_{\\text{pembanding}} - TT_{\\text{LEXZON}}}{TT_{\\text{pembanding}}}\\times 100\n$$\n")
-w("$$\n\\text{Selisih terhadap } N^* = N^* - \\sum_{(i,j)} x_{ij}\n$$\n")
-w("**Proposisi 1.** Setiap alokasi LEXZON (a) tidak menyisakan siswa tidak tertampung yang memiliki sekolah "
-  "dalam radius dengan kursi kosong, dan (b) tidak menolak siswa yang lebih dekat ke suatu sekolah daripada "
-  "siswa yang diterima di sekolah tersebut.\n\n"
-  "**Proposisi 2.** A(0) = jumlah siswa diterima deferred acceptance (teorema rural hospitals), dan "
-  "A(k) = N* untuk k ≥ ε_F.\n")
+w("**Additional metrics**\n\n$$\n\\text{Reduction in UA}(\\%) = \\frac{UA_{\\text{comparator}} - UA_{\\text{LEXZON}}}{UA_{\\text{comparator}}}\\times 100\n$$\n")
+w("$$\n\\text{Gap to } N^* = N^* - \\sum_{(i,j)} x_{ij}\n$$\n")
+w("**Proposition 1.** Every LEXZON assignment (a) leaves no unassigned applicant who has a school within the "
+  "radius with a free seat, and (b) rejects no applicant who is closer to a school than an applicant admitted "
+  "to that school.\n\n"
+  "**Proposition 2.** A(0) equals the enrollment of deferred acceptance (the rural hospitals theorem), and "
+  "A(k) = N* for k >= eps_F.\n")
 
-# ============================================================ HASIL
-w("\n---\n\n# Bagian C. Hasil Pengujian\n")
-w("## C.1 Pengujian perangkat lunak\n")
-w(table(["Jenis uji", "Jumlah", "Lulus", "Keterangan"], [
-    ["Uji unit solver (optimum brute force, batas, kelayakan)", "50", "50", "test_solver.py"],
-    ["Uji unit keadilan dan constrained k-means", "52", "52", "test_fairness.py"],
-    ["Uji unit model harga keadilan (Proposisi 2)", "24", "24", "test_pareto.py"],
-    ["Uji end-to-end aplikasi (peramban)", "22", "22", "TC-01 s.d. TC-22"],
-    ["Reproduktibilitas (29 berkas hasil dijalankan ulang)", "29", "29", "Identik, kecuali waktu komputasi"]]))
+# ============================================================ RESULTS
+w("\n---\n\n# Part C. Results\n")
+w("## C.1 Software testing\n")
+w(table(["Test type", "Count", "Passed", "Notes"], [
+    ["Solver unit tests (brute-force optimum, bounds, feasibility)", "50", "50", "test_solver.py"],
+    ["Fairness and constrained k-means unit tests", "52", "52", "test_fairness.py"],
+    ["Price-of-fairness model unit tests (Proposition 2)", "24", "24", "test_pareto.py"],
+    ["End-to-end application tests (browser)", "22", "22", "TC-01 to TC-22"],
+    ["Reproducibility (29 result files rerun)", "29", "29", "Identical, apart from runtimes"]]))
 
-w("## C.2 Hasil tiap tahap LEXZON per skenario\n")
-w(table(["Skenario", "Kursi", "N*", "z* (km)", "Langkah bisection", "F(z⁻)", "Sekolah penuh", "Model paksa A0: di luar R"],
+w("## C.2 LEXZON stage results per scenario\n")
+w(table(["Scenario", "Seats", "N*", "z* (km)", "Bisection steps", "F(z-)", "Schools full",
+         "Forced model A0: beyond R"],
         [[r["Scenario"], f(r["Seats"]), f(r["Max-flow bound N*"]), f(r["z* (km)"]), f(r["Bisection steps"]),
           f(r["Certificate flow below z*"]), f(r["Proposed schools full"]),
-          f(r["Forced model beyond R"]) if r["Forced model feasible"] else "tidak layak"] for _, r in summ.iterrows()]))
+          f(r["Forced model beyond R"]) if r["Forced model feasible"] else "infeasible"] for _, r in summ.iterrows()]))
 
 b7 = pd.read_csv(R / "fairness" / "b7_comparison.csv")
-w("## C.3 Perbandingan metode (R = 1 km)\n")
+w("## C.3 Method comparison (R = 1 km)\n")
 for s in SC:
     c = pd.read_csv(R / "scenarios" / f"{s}_comparison.csv")
     c = pd.concat([c, b7[b7["Scenario"] == s].assign(Code="B7")], ignore_index=True)
@@ -215,11 +238,11 @@ for s in SC:
         rows.append([NAME[r["Code"]], f(r["admitted"], 1), f(r["rejected"], 1), f(r["rejected_no_school"]),
                      f(r["rejected_full"], 1), f(r["gap_to_max"], 1), f(r["overflow_students"]), f(r["mean_km"]),
                      f(r["max_km"]), f(r["total_km"], 1), f(r["gini"]), f(r["runtime_s"], 3)])
-    w(f"### Tabel C3-{s}. Perbandingan metode – {s}: {desc[s].lower()}\n")
-    w(table(["Metode", "Diterima", "TT", "TT: tanpa sekolah", "TT: sekolah penuh", "Selisih N*", "Melebihi kuota",
-             "Rata² (km)", "Maks (km)", "Total (km)", "Gini", "Waktu (s)"], rows))
+    w(f"### Table C3-{s}. Method comparison - {s}: {desc[s].lower()}\n")
+    w(table(["Method", "Assigned", "UA", "UA: no school", "UA: schools full", "Gap to N*", "Capacity overflow",
+             "Mean (km)", "Max (km)", "Total (km)", "Gini", "Runtime (s)"], rows))
 
-w("### Tabel C3-R. Ringkasan pengurangan siswa tidak tertampung oleh LEXZON (%)\n")
+w("### Table C3-R. Reduction in unassigned applicants achieved by LEXZON (%)\n")
 rows = []
 for code in ["B2", "B3", "B4", "B7"]:
     row = [NAME[code]]
@@ -228,60 +251,68 @@ for code in ["B2", "B3", "B4", "B7"]:
         base = b7.set_index("Scenario").loc[s, "rejected"] if code == "B7" else c.loc[code, "rejected"]
         row.append(f(100 * (base - c.loc["P", "rejected"]) / base, 1))
     rows.append(row)
-w(table(["Pembanding", "S1", "S2", "S3"], rows))
+w(table(["Comparator", "S1", "S2", "S3"], rows))
 
 ab = pd.read_csv(R / "scenarios" / "ablation_all_scenarios.csv")
-w("## C.4 Studi ablasi\n")
-lab = {"A0": "Model awal (Euclidean derajat, semua wajib ditempatkan)", "A1": "+ Haversine (km)",
-       "A2": "+ radius R = 1 km dengan izin tidak ditempatkan", "A3": "+ tahap jarak terjauh minimum (LEXZON)"}
+w("## C.4 Ablation study\n")
+lab = {"A0": "Initial model (Euclidean degrees, every applicant placed)", "A1": "+ Haversine (km)",
+       "A2": "+ radius R = 1 km with applicants allowed to stay unassigned",
+       "A3": "+ minimum maximum distance stage (LEXZON)"}
 rows = []
 for _, r in ab.iterrows():
     ok = r["Status"] == "Optimal"
-    rows.append([r["Scenario"], r["Code"], lab[r["Code"]], "Layak" if ok else "Tidak layak (kursi < siswa)",
-                 f(r["admitted"]) if ok else "–", f(r["rejected"]) if ok else "–", f(r["beyond_radius"]) if ok else "–",
+    rows.append([r["Scenario"], r["Code"], lab[r["Code"]], "Feasible" if ok else "Infeasible (seats < applicants)",
+                 f(r["admitted"]) if ok else "–", f(r["rejected"]) if ok else "–",
+                 f(r["beyond_radius"]) if ok else "–",
                  f(r["max_km"]) if ok else "–", f(r["total_km"], 1) if ok else "–"])
-w(table(["Skenario", "Kode", "Konfigurasi", "Status", "Diterima", "TT", "Di luar R", "Maks (km)", "Total (km)"], rows))
+w(table(["Scenario", "Code", "Configuration", "Status", "Assigned", "UA", "Beyond R", "Max (km)", "Total (km)"], rows))
 
-w("## C.5 Sensitivitas radius\n")
-for metric, label, d in [("rejected", "Siswa tidak tertampung", 0), ("max_km", "Jarak terjauh (km)", 3),
-                         ("total_km", "Total jarak (km)", 1)]:
-    w(f"### Tabel C5-{'abc'[['rejected','max_km','total_km'].index(metric)]}. {label} menurut radius\n")
+w("## C.5 Radius sensitivity\n")
+for metric, label, d in [("rejected", "Unassigned applicants", 0), ("max_km", "Maximum distance (km)", 3),
+                         ("total_km", "Total distance (km)", 1)]:
+    w(f"### Table C5-{'abc'[['rejected','max_km','total_km'].index(metric)]}. {label} by radius\n")
     rows = []
     for s in SC:
         sw = pd.read_csv(R / "scenarios" / f"{s}_radius.csv")
         piv = sw.pivot(index="Radius (km)", columns="Code", values=metric)
         for rad, r in piv.iterrows():
-            rows.append([s, "∞" if np.isinf(rad) else f(rad, 2), f(r["P"], d), f(r["B5"], d), f(r["B2"], d), f(r["B4"], d)])
-    w(table(["Skenario", "Radius (km)", "LEXZON", "B5", "B2", "B4"], rows))
+            rows.append([s, "inf" if np.isinf(rad) else f(rad, 2), f(r["P"], d), f(r["B5"], d), f(r["B2"], d),
+                         f(r["B4"], d)])
+    w(table(["Scenario", "Radius (km)", "LEXZON", "B5", "B2", "B4"], rows))
 
-w("## C.6 Uji statistik Wilcoxon satu sisi (30 sampel ulang, 80% siswa)\n")
+w("## C.6 One-sided Wilcoxon test (30 subsamples, 80% of the applicants)\n")
 st = pd.read_csv(R / "scenarios" / "scenario_stat_summary.csv")
 bw = pd.read_csv(R / "fairness" / "b7_wilcoxon.csv")
 rows = []
 for s in SC:
     for _, r in st[st["Scenario"] == s].iterrows():
         code = r["Baseline"].split(" ")[0]
-        rows.append([s, code, r["✕ Proposed (mean ± sd)"].replace(".", ","), r["✕ Baseline (mean ± sd)"].replace(".", ","),
-                     f(r["Mean difference"], 1), f"{r['Proposed better (runs)']}/{r['Tied (runs)']}/{r['Proposed worse (runs)']}",
+        rows.append([s, code, r["✕ Proposed (mean ± sd)"], r["✕ Baseline (mean ± sd)"],
+                     f(r["Mean difference"], 1),
+                     f"{r['Proposed better (runs)']}/{r['Tied (runs)']}/{r['Proposed worse (runs)']}",
                      f(r["W statistic"], 0), "–" if pd.isna(r["p-value"]) else f"{r['p-value']:.1e}",
-                     "Signifikan" if str(r["Conclusion"]).startswith("Significant") else "Identik"])
+                     "Significant" if str(r["Conclusion"]).startswith("Significant") else "Identical"])
     b = bw[bw["Scenario"] == s].iloc[0]
     rows.append([s, "B7", f"{f(b['LEXZON rejected mean'],1)} ± {f(b['LEXZON rejected sd'],1)}",
                  f"{f(b['Baseline rejected mean'],1)} ± {f(b['Baseline rejected sd'],1)}",
-                 f(b["Baseline rejected mean"] - b["LEXZON rejected mean"], 1), f"{b['better']}/{b['tied']}/{b['worse']}",
-                 f(b["W"], 0), f"{b['p']:.1e}", "Signifikan" if b["p"] < 0.05 else "Tidak"])
-w(table(["Skenario", "Pembanding", "TT LEXZON (rata² ± sd)", "TT pembanding (rata² ± sd)", "Selisih rata²",
-         "Lebih baik/seri/lebih buruk", "W", "p-value", "Kesimpulan"], rows))
+                 f(b["Baseline rejected mean"] - b["LEXZON rejected mean"], 1),
+                 f"{b['better']}/{b['tied']}/{b['worse']}",
+                 f(b["W"], 0), f"{b['p']:.1e}", "Significant" if b["p"] < 0.05 else "Not significant"])
+w(table(["Scenario", "Comparator", "UA LEXZON (mean ± sd)", "UA comparator (mean ± sd)", "Mean difference",
+         "Better/tied/worse", "W", "p-value", "Conclusion"], rows))
 
-w("## C.7 Skalabilitas (data sintetis, median 3 pengulangan)\n")
+w("## C.7 Scalability (synthetic data, median of 3 repetitions)\n")
 sc = pd.read_csv(R / "scenarios" / "scalability_median.csv")
-w(table(["Siswa", "Kursi", "Pasangan layak", "Diterima", "N*", "Tahap 1 (s)", "Tahap 2 (s)", "Tahap 3 (s)",
+w(table(["Applicants", "Seats", "Eligible pairs", "Assigned", "N*", "Stage 1 (s)", "Stage 2 (s)", "Stage 3 (s)",
          "LEXZON total (s)", "Deferred acceptance (s)"],
-        [[f(r["Students"]), f(r["Total seats"]), f(r["Pairs within radius"]), f(r["Admitted"]), f(r["Max-flow upper bound"]),
-          f(r["Stage 1 (max admissions)"], 4), f(r["Stage 2 (min max distance)"], 4), f(r["Stage 3 (min total distance)"], 4),
-          f(r["Proposed total runtime (s)"], 3), f(r["Deferred Acceptance runtime (s)"], 3)] for _, r in sc.iterrows()]))
+        [[f(r["Students"]), f(r["Total seats"]), f(r["Pairs within radius"]), f(r["Admitted"]),
+          f(r["Max-flow upper bound"]),
+          f(r["Stage 1 (max admissions)"], 4), f(r["Stage 2 (min max distance)"], 4),
+          f(r["Stage 3 (min total distance)"], 4),
+          f(r["Proposed total runtime (s)"], 3), f(r["Deferred Acceptance runtime (s)"], 3)]
+         for _, r in sc.iterrows()]))
 
-w("## C.8 Keadilan prioritas jarak (R = 1 km, data penuh)\n")
+w("## C.8 Distance-priority fairness (R = 1 km, full data)\n")
 fa = pd.read_csv(R / "fairness" / "fairness_full.csv")
 lf = pd.read_csv(R / "pareto" / "lexzon_f_metrics.csv")
 rows = []
@@ -291,32 +322,36 @@ for s in SC:
                      f(r["envy_assigned"], 1), f(r["envy_via_vacant_seat"], 1), f(r["envy_share_pct"], 1),
                      f(r["envy_extra_km_median"])])
     r = lf[lf["Scenario"] == s].iloc[0]
-    rows.append([s, "LEXZON-F", f(r["rejected"]), f(r["envy_students"]), f(r["envy_unassigned"]), f(r["envy_assigned"]),
-                 f(r["envy_via_vacant_seat"]), f(r["envy_share_pct"], 1), f(r["envy_extra_km_median"])])
-w(table(["Skenario", "Metode", "TT", "Siswa dengan pelanggaran", "Ditolak padahal lebih dekat",
-         "Diterima bukan di sekolah terdekat", "Via kursi kosong", "% siswa", "Median selisih jarak (km)"], rows))
+    rows.append([s, "LEXZON-F", f(r["rejected"]), f(r["envy_students"]), f(r["envy_unassigned"]),
+                 f(r["envy_assigned"]), f(r["envy_via_vacant_seat"]), f(r["envy_share_pct"], 1),
+                 f(r["envy_extra_km_median"])])
+w(table(["Scenario", "Method", "UA", "Applicants with a violation", "Rejected although closer",
+         "Assigned away from the nearest school", "Through a vacant seat", "% of applicants",
+         "Median extra distance (km)"], rows))
 
 fr = pd.read_csv(R / "fairness" / "fairness_runs.csv")
-w("### Tabel C8-R. Keadilan pada 30 sampel ulang (rata-rata)\n")
-g = fr.groupby(["Scenario", "Code"])[["rejected", "envy_students", "envy_unassigned", "envy_share_pct"]].mean().reset_index()
-w(table(["Skenario", "Metode", "TT", "Siswa dengan pelanggaran", "Ditolak padahal lebih dekat", "% siswa"],
+w("### Table C8-R. Fairness over 30 subsamples (means)\n")
+g = fr.groupby(["Scenario", "Code"])[["rejected", "envy_students", "envy_unassigned",
+                                      "envy_share_pct"]].mean().reset_index()
+w(table(["Scenario", "Method", "UA", "Applicants with a violation", "Rejected although closer", "% of applicants"],
         [[r["Scenario"], NAME[r["Code"]], f(r["rejected"], 1), f(r["envy_students"], 1), f(r["envy_unassigned"], 1),
           f(r["envy_share_pct"], 1)] for _, r in g.iterrows()]))
 
-w("## C.9 Kurva harga keadilan\n")
+w("## C.9 Price-of-fairness curve\n")
 pp = pd.read_csv(R / "pareto" / "pareto_points.csv")
 rows = []
-label = {"LEXZON": "LEXZON", "DA": "Deferred acceptance", "min_envy_at_Nstar": "LEXZON-F (min. pelanggaran pada N*)",
-         "budget": "Batas pelanggaran k"}
+label = {"LEXZON": "LEXZON", "DA": "Deferred acceptance",
+         "min_envy_at_Nstar": "LEXZON-F (minimum violations at N*)", "budget": "Violation budget k"}
 for _, r in pp.iterrows():
     rows.append([r["Scenario"], label[r["Point"]], f(r["budget"]) if r["Point"] == "budget" else "–", f(r["admitted"]),
-                 f(r["envy"]), f(r["bound"], 0) if not pd.isna(r["bound"]) else "–", "Ya" if r["optimal"] else "Tidak",
+                 f(r["envy"]), f(r["bound"], 0) if not pd.isna(r["bound"]) else "–", "Yes" if r["optimal"] else "No",
                  f(r["runtime_s"], 1), f(r["N_star"])])
-w(table(["Skenario", "Titik", "k", "Diterima", "Siswa dengan pelanggaran", "Batas solver*", "Terbukti optimal",
-         "Waktu (s)", "N*"], rows))
-w("*Untuk titik k: batas atas jumlah diterima; untuk LEXZON-F: batas bawah jumlah pelanggaran.\n")
+w(table(["Scenario", "Point", "k", "Assigned", "Applicants with a violation", "Solver bound*", "Proved optimal",
+         "Runtime (s)", "N*"], rows))
+w("*For a budget point: the upper bound on enrollment; for LEXZON-F: the lower bound on the number of "
+  "violations.\n")
 
-w("### Tabel C9-R. Ringkasan harga keadilan\n")
+w("### Table C9-R. Price-of-fairness summary\n")
 rows = []
 for s in SC:
     g = pp[pp["Scenario"] == s]
@@ -327,31 +362,33 @@ for s in SC:
     ft = lf.set_index("Scenario").loc[s, "total_km"]
     rows.append([s, f(da), f(ns), f(ns - da), f(100 * (int(b50.iloc[0]) - da) / (ns - da), 1) if len(b50) else "–",
                  f(lex), f(fe), f(100 * (lex - fe) / lex, 1), f(100 * (ft - lt) / lt, 1)])
-w(table(["Skenario", "Diterima DA (k = 0)", "N*", "Tambahan penerimaan", "% tambahan tercapai pada k = 50",
-         "Pelanggaran LEXZON", "Pelanggaran LEXZON-F", "Penurunan pelanggaran (%)", "Kenaikan total jarak LEXZON-F (%)"], rows))
+w(table(["Scenario", "Assigned by DA (k = 0)", "N*", "Additional enrollment", "% of the gain reached at k = 50",
+         "LEXZON violations", "LEXZON-F violations", "Reduction in violations (%)",
+         "Increase in LEXZON-F total distance (%)"], rows))
 
-w("## C.10 Simulasi kebijakan: penambahan satu rombongan belajar (28 kursi)\n")
+w("## C.10 Policy simulation: adding one class (28 seats)\n")
 un = pd.read_csv(R / "scenarios" / "unassigned_by_nearest_school.csv")
 wi = pd.read_csv(R / "scenarios" / "whatif_extra_class.csv")
 m = un.merge(wi, left_on=["Scenario", "School"], right_on=["Scenario", "School with extra class"])
-m["Pengurangan"] = m["Unassigned before"] - m["Unassigned after"]
-keep = m[(m["Unassigned nearest to school"] > 0) | (m["Pengurangan"] > 0)]
-piv = keep.pivot_table(index="School", columns="Scenario", values=["Unassigned nearest to school", "Pengurangan"], fill_value=0)
+m["Reduction"] = m["Unassigned before"] - m["Unassigned after"]
+keep = m[(m["Unassigned nearest to school"] > 0) | (m["Reduction"] > 0)]
+piv = keep.pivot_table(index="School", columns="Scenario", values=["Unassigned nearest to school", "Reduction"],
+                       fill_value=0)
 rows = []
 for school in piv.index:
-    rows.append([school.replace("School ", "SD ")] +
+    rows.append([school.replace("School ", "ES ")] +
                 [f(piv.loc[school, ("Unassigned nearest to school", s)]) for s in SC] +
-                [f(piv.loc[school, ("Pengurangan", s)]) for s in SC])
-w(table(["Sekolah", "TT terdekat S1", "TT terdekat S2", "TT terdekat S3", "Pengurangan +1 rombel S1",
-         "Pengurangan +1 rombel S2", "Pengurangan +1 rombel S3"], rows))
+                [f(piv.loc[school, ("Reduction", s)]) for s in SC])
+w(table(["School", "UA nearest S1", "UA nearest S2", "UA nearest S3", "Reduction with +1 class S1",
+         "Reduction with +1 class S2", "Reduction with +1 class S3"], rows))
 rows = []
 for s in SC:
     g = wi[wi["Scenario"] == s]
     red = g["Unassigned before"] - g["Unassigned after"]
     rows.append([s, f(g["Unassigned before"].iloc[0]), f(g["Unassigned after"].min()), f(int((red == red.max()).sum())),
                  f(int((red == 0).sum()))])
-w(table(["Skenario", "TT awal", "TT terbaik setelah +1 rombel", "Jumlah sekolah dengan pengurangan terbesar",
-         "Jumlah sekolah tanpa pengurangan"], rows))
+w(table(["Scenario", "UA before", "Best UA after +1 class", "Schools with the largest reduction",
+         "Schools with no reduction"], rows))
 
 OUT.write_text("\n".join(md), encoding="utf-8")
 print(OUT, len("\n".join(md)))

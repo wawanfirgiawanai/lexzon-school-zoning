@@ -1,5 +1,5 @@
 """
-Zonasi 2 — exact student-to-school allocation within a zoning radius.
+LEXZON — exact student-to-school allocation within a zoning radius.
 
 Run:  streamlit run app.py
 """
@@ -12,11 +12,11 @@ import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 
-from zonasi import charts, data, maps, metrics, solver
-from zonasi import experiments as ex
-from zonasi.distance import haversine_matrix
+from lexzon import charts, data, maps, metrics, solver
+from lexzon import experiments as ex
+from lexzon.distance import haversine_matrix
 
-st.set_page_config(page_title="Zonasi 2 — School Zoning Allocation", page_icon="🏫", layout="wide")
+st.set_page_config(page_title="LEXZON — School Zoning Allocation", page_icon="🏫", layout="wide")
 
 P = ex.PROPOSED_CODE
 NAMES = ex.METHOD_NAMES
@@ -118,7 +118,7 @@ def run_state(name, context):
 
 
 # ------------------------------------------------------------------ sidebar
-st.sidebar.title("🏫 Zonasi 2")
+st.sidebar.title("🏫 LEXZON")
 st.sidebar.caption("Exact student-to-school allocation within a zoning radius")
 
 source = st.sidebar.radio("Data source", ["Bundled dataset", "Upload CSV"], horizontal=True)
@@ -482,6 +482,6 @@ if exports:
         for name, df in exports.items():
             zf.writestr(f"{name}.csv", df.to_csv(index=False).encode("utf-8-sig"))
     st.sidebar.download_button(f"⬇ Download all tables ({len(exports)} files, ZIP)", buffer.getvalue(),
-                               file_name="zonasi_2_results.zip", mime="application/zip", on_click="ignore")
+                               file_name="lexzon_results.zip", mime="application/zip", on_click="ignore")
 else:
     st.sidebar.caption("Tables you compute can be downloaded together here.")

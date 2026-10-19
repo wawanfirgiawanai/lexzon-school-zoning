@@ -6,8 +6,8 @@ nearest school, and (2) the proposed method re-run after adding one class of
 28 seats to each school in turn.
 
 Run from the project root:  python scripts/policy_whatif.py
-Outputs: docs/results/scenarios/unassigned_by_nearest_school.csv,
-         docs/results/scenarios/whatif_extra_class.csv
+Outputs: results/scenarios/unassigned_by_nearest_school.csv,
+         results/scenarios/whatif_extra_class.csv
 """
 import sys
 from pathlib import Path
@@ -18,10 +18,10 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from zonasi import data, solver  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
+from lexzon import data, solver  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
 
-OUT = ROOT / "docs" / "results" / "scenarios"
+OUT = ROOT / "results" / "scenarios"
 RADIUS, CLASS_SIZE = 1.0, 28
 
 

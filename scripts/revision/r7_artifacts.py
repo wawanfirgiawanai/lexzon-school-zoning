@@ -25,15 +25,15 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from zonasi import baselines, solver  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
-from zonasi.fairness import constrained_kmeans, priority_violations  # noqa: E402
+from lexzon import baselines, solver  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
+from lexzon.fairness import constrained_kmeans, priority_violations  # noqa: E402
 
 RADIUS = 1.0
 ROUNDING = 0.05
 SEEDS_B3 = list(range(30))
 SUBSAMPLE_SEED, SUBSAMPLE_RUNS, SUBSAMPLE_FRACTION = 42, 30, 0.8
-SCENARIOS = {"S1": "skenario_1_kuota_pas", "S2": "skenario_2_kuota_lebih", "S3": "skenario_3_kuota_kurang"}
+SCENARIOS = {"S1": "scenario_1_matched", "S2": "scenario_2_surplus", "S3": "scenario_3_insufficient"}
 OUT = ROOT / "docs" / "artifacts"
 
 
@@ -42,8 +42,8 @@ def school_codes(n):
 
 
 def export_scenario(scen, folder, mode):
-    schools = pd.read_csv(ROOT / "dataset" / folder / "sekolah.csv")
-    students = pd.read_csv(ROOT / "dataset" / folder / "dataset_siswa.csv")
+    schools = pd.read_csv(ROOT / "dataset" / folder / "schools.csv")
+    students = pd.read_csv(ROOT / "dataset" / folder / "students.csv")
     codes = school_codes(len(schools))
     dist = haversine_matrix(students, schools)
     quotas = schools["Quota"].to_numpy(dtype=int)

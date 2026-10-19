@@ -3,7 +3,7 @@ Distance-priority fairness and the constrained k-means baseline (B7) on the
 three capacity scenarios: full data at R = 1 km plus 30 resampled instances.
 
 Run from the project root:  python scripts/fairness_experiments.py
-Outputs: docs/results/fairness/*.csv
+Outputs: results/fairness/*.csv
 """
 import sys
 import time
@@ -16,10 +16,10 @@ from scipy.stats import wilcoxon
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from zonasi import baselines, data, fairness, solver  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
+from lexzon import baselines, data, fairness, solver  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
 
-OUT = ROOT / "docs" / "results" / "fairness"
+OUT = ROOT / "results" / "fairness"
 RADIUS, SEEDS = 1.0, 30
 RUNS, FRACTION, SEED = 30, 0.8, 42
 

@@ -6,7 +6,7 @@ status are recorded, so the manuscript can state which conclusions are invariant
 to the unfinished optimization.
 
 Usage:  python scripts/revision/r3_lexzonf_time.py [limits in seconds...]
-Output: docs/results/revision/lexzonf_time.csv
+Output: results/revision/lexzonf_time.csv
 """
 import sys
 import time
@@ -17,22 +17,22 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from zonasi import solver  # noqa: E402
-from zonasi.distance import haversine_matrix  # noqa: E402
-from zonasi.pareto import EnvyModel  # noqa: E402
+from lexzon import solver  # noqa: E402
+from lexzon.distance import haversine_matrix  # noqa: E402
+from lexzon.pareto import EnvyModel  # noqa: E402
 
 RADIUS = 1.0
 WORKERS = 12
-SCENARIOS = {"S1": "skenario_1_kuota_pas", "S2": "skenario_2_kuota_lebih", "S3": "skenario_3_kuota_kurang"}
-OUT = ROOT / "docs" / "results" / "revision"
+SCENARIOS = {"S1": "scenario_1_matched", "S2": "scenario_2_surplus", "S3": "scenario_3_insufficient"}
+OUT = ROOT / "results" / "revision"
 
 
 def main(limits):
     OUT.mkdir(parents=True, exist_ok=True)
     rows = []
     for scen, folder in SCENARIOS.items():
-        schools = pd.read_csv(ROOT / "dataset" / folder / "sekolah.csv")
-        students = pd.read_csv(ROOT / "dataset" / folder / "dataset_siswa.csv")
+        schools = pd.read_csv(ROOT / "dataset" / folder / "schools.csv")
+        students = pd.read_csv(ROOT / "dataset" / folder / "students.csv")
         dist = haversine_matrix(students, schools)
         quotas = schools["Quota"].to_numpy(dtype=int)
         lex = solver.proposed(dist, quotas, RADIUS)
