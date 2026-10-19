@@ -1,0 +1,13 @@
+Scenario,Code,Configuration,Status,admitted,rejected,rejected_no_school,rejected_full,admission_rate,gap_to_max,seats_vacant,overflow_students,overflow_schools,total_km,mean_km,p90_km,max_km,gini,dbi,runtime_s,beyond_radius
+S1,A0,"Original thesis model (Euclidean degrees, everyone must be placed)",Optimal,1209.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,489.2336,0.4047,0.9908,2.23,0.5144,1.4154,0.0951,121.0
+S1,A1,+ Haversine distance (km),Optimal,1209.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,489.2335,0.4047,0.9908,2.23,0.5142,1.4128,0.0938,121.0
+S1,A2,"+ zoning radius R with rejection allowed (max admissions, then min total)",Optimal,1141.0,68.0,3.0,65.0,94.3755,0.0,68.0,0.0,0.0,366.0838,0.3208,0.7192,0.9954,0.4144,0.9837,0.0417,0.0
+S1,A3,+ min-max stage (proposed method),Optimal,1141.0,68.0,3.0,65.0,94.3755,0.0,68.0,0.0,0.0,366.0838,0.3208,0.7192,0.9954,0.4144,0.9837,0.0485,0.0
+S2,A0,"Original thesis model (Euclidean degrees, everyone must be placed)",Optimal,1209.0,0.0,0.0,0.0,100.0,0.0,219.0,0.0,0.0,378.3478,0.3129,0.634,2.1629,0.4647,1.0087,0.0888,47.0
+S2,A1,+ Haversine distance (km),Optimal,1209.0,0.0,0.0,0.0,100.0,0.0,219.0,0.0,0.0,378.3478,0.3129,0.634,2.1629,0.4647,1.0087,0.0862,47.0
+S2,A2,"+ zoning radius R with rejection allowed (max admissions, then min total)",Optimal,1180.0,29.0,3.0,26.0,97.6013,0.0,248.0,0.0,0.0,323.9314,0.2745,0.5704,0.9954,0.4005,0.9904,0.0446,0.0
+S2,A3,+ min-max stage (proposed method),Optimal,1180.0,29.0,3.0,26.0,97.6013,0.0,248.0,0.0,0.0,323.9314,0.2745,0.5704,0.9954,0.4005,0.9904,0.0444,0.0
+S3,A0,"Original thesis model (Euclidean degrees, everyone must be placed)",Infeasible (seats < students),,,,,,,,,,,,,,,,,
+S3,A1,+ Haversine distance (km),Infeasible (seats < students),,,,,,,,,,,,,,,,,
+S3,A2,"+ zoning radius R with rejection allowed (max admissions, then min total)",Optimal,986.0,223.0,3.0,220.0,81.555,0.0,14.0,0.0,0.0,223.3587,0.2265,0.4658,0.9754,0.403,0.9169,0.0334,0.0
+S3,A3,+ min-max stage (proposed method),Optimal,986.0,223.0,3.0,220.0,81.555,0.0,14.0,0.0,0.0,226.6216,0.2298,0.4775,0.8591,0.4008,0.9234,0.037,0.0

@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+# applicant locations are personal data and must not be committed
+dataset/**/dataset_siswa.csv

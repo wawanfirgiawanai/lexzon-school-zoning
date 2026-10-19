@@ -1,0 +1,4 @@
+Scenario,admitted,rejected,rejected_no_school,rejected_full,admission_rate,gap_to_max,seats_vacant,overflow_students,overflow_schools,total_km,mean_km,p90_km,max_km,gini,dbi,runtime_s,envy_extra_km_mean,envy_extra_km_median,envy_extra_km_max,envy_students,envy_unassigned,envy_assigned,envy_pairs,envy_via_vacant_seat,envy_share_pct
+S1,1141,68,3,65,94.3755,0,68,0,0,395.9596,0.347,0.8764,1.0,0.4564,1.8471,0.0,0.5848,0.5991,0.949,250,0,250,944,26,20.6782
+S2,1180,29,3,26,97.6013,0,248,0,0,358.5459,0.3039,0.8381,1.0,0.4512,2.2878,0.0,0.6293,0.6559,0.9416,158,0,158,635,21,13.0687
+S3,986,223,3,220,81.555,0,14,0,0,246.0793,0.2496,0.6324,0.9946,0.4433,1.2304,0.0,0.5128,0.5229,0.9143,73,0,73,129,0,6.038

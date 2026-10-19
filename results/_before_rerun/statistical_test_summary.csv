@@ -1,0 +1,6 @@
+Baseline,✕ Proposed (mean ± sd),✕ Baseline (mean ± sd),Mean difference,Proposed better (runs),Tied (runs),Proposed worse (runs),W statistic,p-value,Conclusion
+B2 — Greedy nearest,23.2 ± 6.0,71.4 ± 6.2,48.233333333333334,30,0,0,465.0,8.445335024990601e-07,Significant (p < 0.05)
+B3 — Greedy random order,23.2 ± 6.0,76.6 ± 6.0,53.43333333333333,30,0,0,465.0,8.541858495218672e-07,Significant (p < 0.05)
+B4 — Deferred Acceptance,23.2 ± 6.0,80.8 ± 6.8,57.6,30,0,0,465.0,8.477407757846176e-07,Significant (p < 0.05)
+B5 — Exact min-total,23.2 ± 6.0,23.2 ± 6.0,0.0,0,30,0,,,Identical in every run
+B6 — Exact min-max,23.2 ± 6.0,23.2 ± 6.0,0.0,0,30,0,,,Identical in every run

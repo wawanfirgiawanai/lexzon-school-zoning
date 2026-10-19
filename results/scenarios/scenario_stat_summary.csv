@@ -1,0 +1,16 @@
+Scenario,Baseline,✕ Proposed (mean ± sd),✕ Baseline (mean ± sd),Mean difference,Proposed better (runs),Tied (runs),Proposed worse (runs),W statistic,p-value,Conclusion
+S1,B2 — Greedy nearest,54.5 ± 6.5,123.4 ± 6.0,68.96666666666667,30,0,0,465.0,8.52570757299434e-07,Significant (p < 0.05)
+S1,B3 — Greedy random order,54.5 ± 6.5,134.3 ± 5.9,79.83333333333333,30,0,0,465.0,8.318055788973906e-07,Significant (p < 0.05)
+S1,B4 — Deferred Acceptance,54.5 ± 6.5,147.7 ± 6.9,93.26666666666667,30,0,0,465.0,8.531088377398274e-07,Significant (p < 0.05)
+S1,B5 — Exact min-total,54.5 ± 6.5,54.5 ± 6.5,0.0,0,30,0,,,Identical in every run
+S1,B6 — Exact min-max,54.5 ± 6.5,54.5 ± 6.5,0.0,0,30,0,,,Identical in every run
+S2,B2 — Greedy nearest,23.2 ± 6.0,71.4 ± 6.2,48.233333333333334,30,0,0,465.0,8.445335024990601e-07,Significant (p < 0.05)
+S2,B3 — Greedy random order,23.2 ± 6.0,76.6 ± 6.0,53.43333333333333,30,0,0,465.0,8.541858495218672e-07,Significant (p < 0.05)
+S2,B4 — Deferred Acceptance,23.2 ± 6.0,80.8 ± 6.8,57.6,30,0,0,465.0,8.477407757846176e-07,Significant (p < 0.05)
+S2,B5 — Exact min-total,23.2 ± 6.0,23.2 ± 6.0,0.0,0,30,0,,,Identical in every run
+S2,B6 — Exact min-max,23.2 ± 6.0,23.2 ± 6.0,0.0,0,30,0,,,Identical in every run
+S3,B2 — Greedy nearest,178.2 ± 2.6,185.7 ± 5.0,7.5,28,2,0,406.0,1.8527643891142584e-06,Significant (p < 0.05)
+S3,B3 — Greedy random order,178.2 ± 2.6,205.4 ± 4.4,27.233333333333334,30,0,0,465.0,8.360302889964901e-07,Significant (p < 0.05)
+S3,B4 — Deferred Acceptance,178.2 ± 2.6,215.0 ± 7.0,36.833333333333336,30,0,0,465.0,8.59046465622837e-07,Significant (p < 0.05)
+S3,B5 — Exact min-total,178.2 ± 2.6,178.2 ± 2.6,0.0,0,30,0,,,Identical in every run
+S3,B6 — Exact min-max,178.2 ± 2.6,178.2 ± 2.6,0.0,0,30,0,,,Identical in every run

@@ -1,0 +1,4 @@
+Scenario,Description,Students,Seats,Quota values,Max-flow bound N*,z* (km),Bisection steps,Certificate flow below z*,Forced model feasible,Forced model beyond R,Proposed schools full
+S1,Exact fit (seats = students),1209,1209,"24, 47, 71, 74",1141,0.9954,13,1140,True,121.0,22
+S2,Surplus (seats > students),1209,1428,"28, 56, 84",1180,0.9954,13,1179,True,47.0,18
+S3,Shortage (seats < students),1209,1000,"20, 39, 57, 59",986,0.8591,13,985,False,,27

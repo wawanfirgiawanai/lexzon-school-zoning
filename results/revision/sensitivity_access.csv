@@ -1,0 +1,6 @@
+Detour factor,Eligible pairs,Assigned,Unassigned,Max distance (km),Total distance (km),Students with violations,Violation rate (%),Deferred acceptance assigned
+1.0,6641,1180,29,0.9954,323.9,281,23.24,1107
+1.1,5994,1171,38,0.9891,337.4,265,21.92,1107
+1.2,5418,1163,46,0.9958,355.5,266,22.0,1103
+1.3,4933,1159,50,0.9977,378.2,261,21.59,1093
+1.4,4553,1151,58,0.9976,398.6,259,21.42,1084

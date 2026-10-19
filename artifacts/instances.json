@@ -1,0 +1,134 @@
+{
+  "privacy_mode": "rounded",
+  "radius_km": 1.0,
+  "distance": "Haversine, Earth radius 6371 km",
+  "tie_breaking": "lower student index, lower school index (1e-13 key offset)",
+  "random_order_greedy_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29
+  ],
+  "subsampling": {
+    "runs": 30,
+    "fraction": 0.8,
+    "seed_rule": "42 + repetition index",
+    "capacity_rounding": "largest remainder, minimum one seat per school"
+  },
+  "synthetic_scalability": {
+    "resampling": "with replacement from the recorded locations",
+    "jitter_km": 0.15,
+    "schools": "unchanged (28)",
+    "quota_rule": "seats/student ratio preserved, largest remainder",
+    "seed": 42,
+    "repetitions": 3,
+    "statistic": "median"
+  },
+  "constrained_kmeans_B7": {
+    "init": "centres at school locations (planar km)",
+    "assignment_step": "capacitated transportation LP on squared distance",
+    "capacity": "cluster size <= school quota",
+    "centre_update": "mean of members",
+    "max_iter": 50,
+    "stop": "assignment repeats",
+    "restarts": 1,
+    "post_processing": "members beyond R are left unassigned, not reassigned"
+  },
+  "scenarios": [
+    {
+      "scenario": "S1",
+      "students": 1209,
+      "schools": 28,
+      "seats": 1209,
+      "eligible_pairs": 6641,
+      "radius_km": 1.0,
+      "lexzon": {
+        "assigned": 1141,
+        "status": "Optimal",
+        "n_star": 1141,
+        "z_star_km": 0.995428,
+        "stage_times_s": {
+          "Stage 1 (max admissions)": 0.0015,
+          "Stage 2 (min max distance)": 0.0144,
+          "Stage 3 (min total distance)": 0.0649
+        }
+      },
+      "deferred_acceptance_assigned": 1026,
+      "lexzon_students_with_violations": 376,
+      "b7_iterations": 24,
+      "b7_removed_beyond_radius": 143
+    },
+    {
+      "scenario": "S2",
+      "students": 1209,
+      "schools": 28,
+      "seats": 1428,
+      "eligible_pairs": 6641,
+      "radius_km": 1.0,
+      "lexzon": {
+        "assigned": 1180,
+        "status": "Optimal",
+        "n_star": 1180,
+        "z_star_km": 0.995428,
+        "stage_times_s": {
+          "Stage 1 (max admissions)": 0.0011,
+          "Stage 2 (min max distance)": 0.0122,
+          "Stage 3 (min total distance)": 0.0672
+        }
+      },
+      "deferred_acceptance_assigned": 1107,
+      "lexzon_students_with_violations": 281,
+      "b7_iterations": 18,
+      "b7_removed_beyond_radius": 62
+    },
+    {
+      "scenario": "S3",
+      "students": 1209,
+      "schools": 28,
+      "seats": 1000,
+      "eligible_pairs": 6641,
+      "radius_km": 1.0,
+      "lexzon": {
+        "assigned": 986,
+        "status": "Optimal",
+        "n_star": 986,
+        "z_star_km": 0.859053,
+        "stage_times_s": {
+          "Stage 1 (max admissions)": 0.0012,
+          "Stage 2 (min max distance)": 0.0124,
+          "Stage 3 (min total distance)": 0.0555
+        }
+      },
+      "deferred_acceptance_assigned": 940,
+      "lexzon_students_with_violations": 193,
+      "b7_iterations": 29,
+      "b7_removed_beyond_radius": 16
+    }
+  ]
+}

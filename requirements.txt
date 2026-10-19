@@ -1,0 +1,11 @@
+streamlit==1.57.0
+folium==0.20.0
+plotly==7.0.0
+pandas==3.0.2
+numpy==1.26.4
+scipy==1.17.1
+scikit-learn==1.8.0
+matplotlib==3.10.9
+contextily==1.7.1
+pytest==9.0.3
+ortools==9.11.4210

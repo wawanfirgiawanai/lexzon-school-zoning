@@ -1,0 +1,6 @@
+Code,Configuration,Status,admitted,rejected,rejected_no_school,rejected_full,admission_rate,gap_to_max,seats_vacant,overflow_students,overflow_schools,total_km,mean_km,p90_km,max_km,gini,dbi,runtime_s,beyond_radius
+A0,"Original thesis model (Euclidean degrees, everyone must be placed)",Optimal,1209,0,0,0,100.0,0,219,0,0,378.3478,0.3129,0.634,2.1629,0.4647,1.0087,0.1732,47
+A1,+ Haversine distance (km),Optimal,1209,0,0,0,100.0,0,219,0,0,378.3478,0.3129,0.634,2.1629,0.4647,1.0087,0.1762,47
+A2,+ rejection allowed (no radius),Optimal,1209,0,0,0,100.0,0,219,0,0,378.3478,0.3129,0.634,2.1629,0.4647,1.0087,0.2446,47
+A3,+ zoning radius R,Optimal,1180,29,3,26,97.6013,0,248,0,0,323.9314,0.2745,0.5704,0.9954,0.4005,0.9904,0.0715,0
+A4,+ min-max stage (proposed method),Optimal,1180,29,3,26,97.6013,0,248,0,0,323.9314,0.2745,0.5704,0.9954,0.4005,0.9904,0.0916,0

@@ -1,0 +1,22 @@
+Priority rule,Seed,Deferred acceptance assigned,DA violations,LEXZON assigned,LEXZON students with violations,LEXZON violation rate (%)
+distance (manuscript),,1107,0,1180,281,23.24
+distance + 100 m noise,1.0,1107,0,1180,320,26.47
+distance + 100 m noise,2.0,1107,0,1180,316,26.14
+distance + 100 m noise,3.0,1108,0,1180,317,26.22
+distance + 100 m noise,4.0,1109,0,1180,304,25.14
+distance + 100 m noise,5.0,1107,0,1180,300,24.81
+distance + 250 m noise,1.0,1109,0,1180,347,28.7
+distance + 250 m noise,2.0,1109,0,1180,346,28.62
+distance + 250 m noise,3.0,1109,0,1180,343,28.37
+distance + 250 m noise,4.0,1110,0,1180,335,27.71
+distance + 250 m noise,5.0,1109,0,1180,339,28.04
+school-specific lottery,1.0,1126,0,1180,344,28.45
+school-specific lottery,2.0,1126,0,1180,348,28.78
+school-specific lottery,3.0,1124,0,1180,348,28.78
+school-specific lottery,4.0,1121,0,1180,349,28.87
+school-specific lottery,5.0,1122,0,1180,350,28.95
+common lottery,1.0,1113,0,1180,348,28.78
+common lottery,2.0,1107,0,1180,342,28.29
+common lottery,3.0,1113,0,1180,344,28.45
+common lottery,4.0,1112,0,1180,346,28.62
+common lottery,5.0,1114,0,1180,344,28.45

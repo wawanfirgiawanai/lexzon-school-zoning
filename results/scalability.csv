@@ -1,0 +1,7 @@
+Students,Total seats,Pairs within radius,Admitted,Max-flow upper bound,Status,Stage 1 (max admissions),Stage 2 (min max distance),Stage 3 (min total distance),Proposed total runtime (s),Deferred Acceptance runtime (s)
+1000,1181,5435,984,984,Optimal,0.0008,0.0091,0.0424,0.0522,0.0065
+2000,2362,10850,1971,1971,Optimal,0.0013,0.0145,0.0769,0.0927,0.0144
+5000,5906,26961,4946,4946,Optimal,0.0029,0.0413,0.276,0.3202,0.035
+10000,11811,53742,9813,9813,Optimal,0.0056,0.0774,1.0907,1.1736,0.0709
+20000,23623,107970,19490,19490,Optimal,0.0118,0.1922,3.4095,3.6135,0.2013
+50000,59057,270097,48769,48769,Optimal,0.0347,0.6085,9.7849,10.4281,0.4172

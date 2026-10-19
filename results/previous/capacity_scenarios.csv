@@ -1,0 +1,22 @@
+Scenario,Description,Students,Total seats,Original model feasible,Code,Method,admitted,rejected,rejected_no_school,rejected_full,admission_rate,gap_to_max,seats_vacant,overflow_students,overflow_schools,total_km,mean_km,p90_km,max_km,gini,dbi,runtime_s,sd_rejected
+Scenario 1,Exact fit (seats = students),1209,1209,Yes,P,Proposed,1141.0,68.0,3.0,65.0,94.3755,0.0,68.0,0.0,0.0,366.0838,0.3208,0.7192,0.9954,0.4144,0.9837,0.0626,
+Scenario 1,Exact fit (seats = students),1209,1209,Yes,B1,"Nearest, quota ignored",1206.0,3.0,3.0,0.0,99.7519,,249.0,246.0,14.0,259.2841,0.215,0.4011,0.9625,0.3473,0.851,0.0001,
+Scenario 1,Exact fit (seats = students),1209,1209,Yes,B2,Greedy nearest,1057.0,152.0,3.0,149.0,87.4276,84.0,152.0,0.0,0.0,252.4962,0.2389,0.5528,0.9898,0.4239,1.4466,0.0026,
+Scenario 1,Exact fit (seats = students),1209,1209,Yes,B3,Greedy random order (mean of 30 seeds),1043.0667,165.9333,3.0,162.9333,86.2752,97.9333,165.9333,0.0,0.0,278.6681,0.2672,0.5355,0.9906,0.3859,1.4038,0.0024,3.5678
+Scenario 1,Exact fit (seats = students),1209,1209,Yes,B4,Deferred Acceptance,1026.0,183.0,3.0,180.0,84.8635,115.0,183.0,0.0,0.0,205.0595,0.1999,0.362,0.9898,0.3605,0.9011,0.0073,
+Scenario 1,Exact fit (seats = students),1209,1209,Yes,B5,Exact min-total,1141.0,68.0,3.0,65.0,94.3755,0.0,68.0,0.0,0.0,366.0838,0.3208,0.7192,0.9954,0.4144,0.9837,0.0489,
+Scenario 1,Exact fit (seats = students),1209,1209,Yes,B6,Exact min-max,1141.0,68.0,3.0,65.0,94.3755,0.0,68.0,0.0,0.0,663.78,0.5818,0.9077,0.9954,0.2532,2.5628,0.011,
+Scenario 2,Surplus (seats > students),1209,1428,Yes,P,Proposed,1180.0,29.0,3.0,26.0,97.6013,0.0,248.0,0.0,0.0,323.9314,0.2745,0.5704,0.9954,0.4005,0.9904,0.0527,
+Scenario 2,Surplus (seats > students),1209,1428,Yes,B1,"Nearest, quota ignored",1206.0,3.0,3.0,0.0,99.7519,,406.0,184.0,11.0,259.2841,0.215,0.4011,0.9625,0.3473,0.851,0.0001,
+Scenario 2,Surplus (seats > students),1209,1428,Yes,B2,Greedy nearest,1117.0,92.0,3.0,89.0,92.3904,63.0,311.0,0.0,0.0,256.9035,0.23,0.4777,0.9703,0.399,1.2802,0.0025,
+Scenario 2,Surplus (seats > students),1209,1428,Yes,B3,Greedy random order (mean of 30 seeds),1113.1,95.9,3.0,92.9,92.0678,66.9,314.9,0.0,0.0,282.8987,0.2542,0.4998,0.9903,0.3791,1.2874,0.0027,2.8443
+Scenario 2,Surplus (seats > students),1209,1428,Yes,B4,Deferred Acceptance,1107.0,102.0,3.0,99.0,91.5633,73.0,321.0,0.0,0.0,235.9415,0.2131,0.3957,0.8543,0.3692,1.1413,0.0078,
+Scenario 2,Surplus (seats > students),1209,1428,Yes,B5,Exact min-total,1180.0,29.0,3.0,26.0,97.6013,0.0,248.0,0.0,0.0,323.9314,0.2745,0.5704,0.9954,0.4005,0.9904,0.0405,
+Scenario 2,Surplus (seats > students),1209,1428,Yes,B6,Exact min-max,1180.0,29.0,3.0,26.0,97.6013,0.0,248.0,0.0,0.0,737.8726,0.6253,0.9346,0.9954,0.2483,3.6005,0.0175,
+Scenario 3,Shortage (seats < students),1209,1000,No,P,Proposed,986.0,223.0,3.0,220.0,81.555,0.0,14.0,0.0,0.0,226.6216,0.2298,0.4775,0.8591,0.4008,0.9234,0.0542,
+Scenario 3,Shortage (seats < students),1209,1000,No,B1,"Nearest, quota ignored",1206.0,3.0,3.0,0.0,99.7519,,147.0,353.0,20.0,259.2841,0.215,0.4011,0.9625,0.3473,0.851,0.0001,
+Scenario 3,Shortage (seats < students),1209,1000,No,B2,Greedy nearest,976.0,233.0,3.0,230.0,80.7279,10.0,24.0,0.0,0.0,258.4548,0.2648,0.7106,0.9876,0.4658,1.6302,0.0032,
+Scenario 3,Shortage (seats < students),1209,1000,No,B3,Greedy random order (mean of 30 seeds),952.9,256.1,3.0,253.1,78.8172,33.1,47.1,0.0,0.0,276.0458,0.2897,0.6082,0.9935,0.3941,1.6192,0.0029,4.3
+Scenario 3,Shortage (seats < students),1209,1000,No,B4,Deferred Acceptance,940.0,269.0,3.0,266.0,77.7502,46.0,60.0,0.0,0.0,191.2819,0.2035,0.372,0.9567,0.3933,1.0585,0.0538,
+Scenario 3,Shortage (seats < students),1209,1000,No,B5,Exact min-total,986.0,223.0,3.0,220.0,81.555,0.0,14.0,0.0,0.0,223.3587,0.2265,0.4658,0.9754,0.403,0.9169,0.0408,
+Scenario 3,Shortage (seats < students),1209,1000,No,B6,Exact min-max,986.0,223.0,3.0,220.0,81.555,0.0,14.0,0.0,0.0,481.452,0.4883,0.8032,0.8591,0.2844,2.7071,0.0112,

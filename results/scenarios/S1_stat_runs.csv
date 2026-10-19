@@ -1,0 +1,181 @@
+Scenario,Run,Code,Method,rejected,max_km,total_km
+S1,1,P,Proposed,61,0.9954,298.2157
+S1,1,B2,Greedy nearest,132,0.9837,199.8417
+S1,1,B3,Greedy random order,137,0.9943,227.2621
+S1,1,B4,Deferred Acceptance,155,0.9221,162.1946
+S1,1,B5,Exact min-total,61,0.9954,298.2157
+S1,1,B6,Exact min-max,61,0.9954,523.1207
+S1,2,P,Proposed,55,0.9954,291.2891
+S1,2,B2,Greedy nearest,122,0.981,202.4117
+S1,2,B3,Greedy random order,131,0.9747,223.8516
+S1,2,B4,Deferred Acceptance,149,0.8829,164.8958
+S1,2,B5,Exact min-total,55,0.9954,291.2891
+S1,2,B6,Exact min-max,55,0.9954,521.4862
+S1,3,P,Proposed,58,0.9954,282.727
+S1,3,B2,Greedy nearest,123,0.9975,205.3322
+S1,3,B3,Greedy random order,132,0.9898,221.8015
+S1,3,B4,Deferred Acceptance,149,0.9536,164.5281
+S1,3,B5,Exact min-total,58,0.9954,282.727
+S1,3,B6,Exact min-max,58,0.9954,541.1395
+S1,4,P,Proposed,60,0.9954,278.4013
+S1,4,B2,Greedy nearest,124,0.9703,194.671
+S1,4,B3,Greedy random order,132,0.9873,219.0924
+S1,4,B4,Deferred Acceptance,140,0.9221,166.2912
+S1,4,B5,Exact min-total,60,0.9954,278.4013
+S1,4,B6,Exact min-max,60,0.9954,534.3493
+S1,5,P,Proposed,60,0.9954,287.5807
+S1,5,B2,Greedy nearest,126,0.981,197.7312
+S1,5,B3,Greedy random order,134,0.9797,219.2075
+S1,5,B4,Deferred Acceptance,150,0.9221,160.9871
+S1,5,B5,Exact min-total,60,0.9954,287.5807
+S1,5,B6,Exact min-max,60,0.9954,535.1385
+S1,6,P,Proposed,46,0.9954,297.9914
+S1,6,B2,Greedy nearest,115,0.9975,206.5275
+S1,6,B3,Greedy random order,127,0.9911,226.6802
+S1,6,B4,Deferred Acceptance,137,0.9221,170.0843
+S1,6,B5,Exact min-total,46,0.9954,297.9914
+S1,6,B6,Exact min-max,46,0.9954,528.44
+S1,7,P,Proposed,43,0.9954,296.5496
+S1,7,B2,Greedy nearest,108,0.9975,209.1889
+S1,7,B3,Greedy random order,119,0.9941,225.9332
+S1,7,B4,Deferred Acceptance,132,0.9975,172.3776
+S1,7,B5,Exact min-total,43,0.9954,296.5496
+S1,7,B6,Exact min-max,43,0.9954,537.6635
+S1,8,P,Proposed,48,0.9954,301.8482
+S1,8,B2,Greedy nearest,122,0.981,198.0647
+S1,8,B3,Greedy random order,132,0.9954,219.4164
+S1,8,B4,Deferred Acceptance,144,0.9221,162.602
+S1,8,B5,Exact min-total,48,0.9954,301.8482
+S1,8,B6,Exact min-max,48,0.9954,532.4121
+S1,9,P,Proposed,60,0.9954,282.1009
+S1,9,B2,Greedy nearest,122,0.9975,200.68
+S1,9,B3,Greedy random order,139,0.9759,212.8422
+S1,9,B4,Deferred Acceptance,144,0.9975,169.031
+S1,9,B5,Exact min-total,60,0.9954,282.1009
+S1,9,B6,Exact min-max,60,0.9954,536.5605
+S1,10,P,Proposed,58,0.9954,288.7559
+S1,10,B2,Greedy nearest,122,0.981,207.02
+S1,10,B3,Greedy random order,137,0.9954,223.5752
+S1,10,B4,Deferred Acceptance,148,0.9221,166.3856
+S1,10,B5,Exact min-total,58,0.9954,288.7559
+S1,10,B6,Exact min-max,58,0.9954,534.105
+S1,11,P,Proposed,49,0.9873,302.6397
+S1,11,B2,Greedy nearest,120,0.981,208.4146
+S1,11,B3,Greedy random order,130,1.0,229.3181
+S1,11,B4,Deferred Acceptance,147,0.8912,167.8111
+S1,11,B5,Exact min-total,49,0.9943,302.5709
+S1,11,B6,Exact min-max,49,0.9873,526.7978
+S1,12,P,Proposed,56,0.9873,284.5772
+S1,12,B2,Greedy nearest,118,0.981,205.1689
+S1,12,B3,Greedy random order,131,0.981,222.4373
+S1,12,B4,Deferred Acceptance,144,0.8829,165.6219
+S1,12,B5,Exact min-total,56,0.9873,284.5772
+S1,12,B6,Exact min-max,56,0.9873,533.9384
+S1,13,P,Proposed,63,0.9701,294.0211
+S1,13,B2,Greedy nearest,130,0.981,201.3205
+S1,13,B3,Greedy random order,142,0.9943,225.2974
+S1,13,B4,Deferred Acceptance,152,0.9221,164.2029
+S1,13,B5,Exact min-total,63,0.9939,292.4565
+S1,13,B6,Exact min-max,63,0.9701,516.255
+S1,14,P,Proposed,53,0.9954,280.1417
+S1,14,B2,Greedy nearest,115,0.9898,203.5209
+S1,14,B3,Greedy random order,129,0.9929,222.0395
+S1,14,B4,Deferred Acceptance,139,0.8912,165.9395
+S1,14,B5,Exact min-total,53,0.9954,280.1417
+S1,14,B6,Exact min-max,53,0.9954,529.7471
+S1,15,P,Proposed,43,0.9954,316.6808
+S1,15,B2,Greedy nearest,118,0.9837,207.8356
+S1,15,B3,Greedy random order,130,0.9911,229.52
+S1,15,B4,Deferred Acceptance,141,0.9221,171.7623
+S1,15,B5,Exact min-total,43,0.9954,316.6808
+S1,15,B6,Exact min-max,43,0.9954,534.7512
+S1,16,P,Proposed,49,0.9954,298.5689
+S1,16,B2,Greedy nearest,119,0.9975,205.2986
+S1,16,B3,Greedy random order,130,0.9954,227.8635
+S1,16,B4,Deferred Acceptance,141,0.9975,170.9135
+S1,16,B5,Exact min-total,49,0.9954,298.5689
+S1,16,B6,Exact min-max,49,0.9954,531.4625
+S1,17,P,Proposed,51,0.9954,309.0113
+S1,17,B2,Greedy nearest,128,0.9975,203.7508
+S1,17,B3,Greedy random order,144,0.9794,217.4727
+S1,17,B4,Deferred Acceptance,149,0.9975,166.5153
+S1,17,B5,Exact min-total,51,0.9954,309.0113
+S1,17,B6,Exact min-max,51,0.9954,522.9738
+S1,18,P,Proposed,60,0.9954,285.1429
+S1,18,B2,Greedy nearest,127,0.981,203.0207
+S1,18,B3,Greedy random order,141,0.9975,218.7896
+S1,18,B4,Deferred Acceptance,157,0.9221,160.1305
+S1,18,B5,Exact min-total,60,0.9954,285.1429
+S1,18,B6,Exact min-max,60,0.9954,536.2393
+S1,19,P,Proposed,58,0.9954,303.5163
+S1,19,B2,Greedy nearest,132,0.9898,197.785
+S1,19,B3,Greedy random order,138,0.9959,218.3428
+S1,19,B4,Deferred Acceptance,158,0.9898,159.5398
+S1,19,B5,Exact min-total,58,0.9954,303.5163
+S1,19,B6,Exact min-max,58,0.9954,522.1585
+S1,20,P,Proposed,50,0.9954,324.5006
+S1,20,B2,Greedy nearest,129,0.9975,204.6555
+S1,20,B3,Greedy random order,143,0.981,220.7804
+S1,20,B4,Deferred Acceptance,154,0.9975,166.3979
+S1,20,B5,Exact min-total,50,0.9954,324.5006
+S1,20,B6,Exact min-max,50,0.9954,531.1635
+S1,21,P,Proposed,55,0.9954,303.1627
+S1,21,B2,Greedy nearest,127,0.9898,205.7553
+S1,21,B3,Greedy random order,136,0.9949,224.1917
+S1,21,B4,Deferred Acceptance,153,0.9898,164.8245
+S1,21,B5,Exact min-total,55,0.9954,303.1627
+S1,21,B6,Exact min-max,55,0.9954,523.088
+S1,22,P,Proposed,51,0.9954,310.3831
+S1,22,B2,Greedy nearest,124,0.981,204.6168
+S1,22,B3,Greedy random order,133,0.9942,226.4548
+S1,22,B4,Deferred Acceptance,151,0.8829,164.9664
+S1,22,B5,Exact min-total,51,0.9954,310.3831
+S1,22,B6,Exact min-max,51,0.9954,538.1412
+S1,23,P,Proposed,50,0.9954,288.1502
+S1,23,B2,Greedy nearest,119,0.981,199.6637
+S1,23,B3,Greedy random order,126,0.9975,218.0695
+S1,23,B4,Deferred Acceptance,142,0.8854,164.1616
+S1,23,B5,Exact min-total,50,0.9954,288.1502
+S1,23,B6,Exact min-max,50,0.9954,538.2977
+S1,24,P,Proposed,46,0.9954,311.4645
+S1,24,B2,Greedy nearest,124,0.981,202.9837
+S1,24,B3,Greedy random order,133,0.9975,225.1806
+S1,24,B4,Deferred Acceptance,148,0.9221,164.0834
+S1,24,B5,Exact min-total,46,0.9954,311.4645
+S1,24,B6,Exact min-max,46,0.9954,528.1129
+S1,25,P,Proposed,58,0.9873,306.5603
+S1,25,B2,Greedy nearest,133,0.981,200.6014
+S1,25,B3,Greedy random order,140,0.9971,223.4372
+S1,25,B4,Deferred Acceptance,161,0.9221,157.7873
+S1,25,B5,Exact min-total,58,0.9939,306.4424
+S1,25,B6,Exact min-max,58,0.9873,525.7731
+S1,26,P,Proposed,46,0.9954,303.6187
+S1,26,B2,Greedy nearest,118,0.9898,208.7118
+S1,26,B3,Greedy random order,137,0.9794,215.1475
+S1,26,B4,Deferred Acceptance,146,0.9898,166.863
+S1,26,B5,Exact min-total,46,0.9954,303.6187
+S1,26,B6,Exact min-max,46,0.9954,525.5765
+S1,27,P,Proposed,69,0.9954,280.9409
+S1,27,B2,Greedy nearest,133,0.981,195.8646
+S1,27,B3,Greedy random order,142,0.981,222.4209
+S1,27,B4,Deferred Acceptance,156,0.8815,159.5599
+S1,27,B5,Exact min-total,69,0.9954,280.9409
+S1,27,B6,Exact min-max,69,0.9954,533.7691
+S1,28,P,Proposed,56,0.9954,278.3759
+S1,28,B2,Greedy nearest,118,0.9898,199.3998
+S1,28,B3,Greedy random order,127,0.9954,220.3433
+S1,28,B4,Deferred Acceptance,140,0.9898,165.6143
+S1,28,B5,Exact min-total,56,0.9954,278.3759
+S1,28,B6,Exact min-max,56,0.9954,541.5339
+S1,29,P,Proposed,61,0.9873,290.5915
+S1,29,B2,Greedy nearest,129,0.9975,199.6432
+S1,29,B3,Greedy random order,135,1.0,229.0997
+S1,29,B4,Deferred Acceptance,152,0.9975,164.2566
+S1,29,B5,Exact min-total,61,0.9873,290.5915
+S1,29,B6,Exact min-max,61,0.9873,529.1521
+S1,30,P,Proposed,61,0.9954,286.9059
+S1,30,B2,Greedy nearest,126,0.9975,198.7616
+S1,30,B3,Greedy random order,142,0.9954,214.7879
+S1,30,B4,Deferred Acceptance,153,0.9975,162.1703
+S1,30,B5,Exact min-total,61,0.9954,286.9059
+S1,30,B6,Exact min-max,61,0.9954,532.9864

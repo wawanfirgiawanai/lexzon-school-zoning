@@ -1,0 +1,4 @@
+Scenario,N* published,N* recomputed,DA published,DA recomputed,Violations published,Violations recomputed,Artifacts used,Distance mode
+S1,1141,1141,1026,1026,376,376,eligibility and rankings,rounded
+S2,1180,1180,1107,1107,281,281,eligibility and rankings,rounded
+S3,986,986,940,940,193,193,eligibility and rankings,rounded
