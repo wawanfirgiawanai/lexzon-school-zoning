@@ -1,0 +1,5 @@
+Scenario,N_star,Time limit (s),Feasible violations,Lower bound,Relative gap (%),Proven optimal,Status,Runtime (s)
+S1,1141,1800,253,214.0,15.42,False,FEASIBLE,1802.6
+S1,1141,3600,253,214.0,15.42,False,FEASIBLE,3605.6
+S2,1180,1800,160,118.0,26.25,False,FEASIBLE,1813.8
+S2,1180,3600,170,123.0,27.65,False,FEASIBLE,3607.2
