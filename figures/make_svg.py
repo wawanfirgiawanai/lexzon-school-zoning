@@ -119,7 +119,7 @@ def figure1():
 # ---------------------------------------------------------------- Figure 2: unassigned students by method
 def figure2():
     b7 = pd.read_csv(RES / "fairness" / "b7_comparison.csv").set_index("Scenario")["rejected"]
-    fig, axes = plt.subplots(1, 3, figsize=(FULL_IN, 2.95), sharex=True)
+    fig, axes = plt.subplots(1, 3, figsize=(FULL_IN, 2.45), sharex=True)
     for ax, (sc, title) in zip(axes, SCEN.items()):
         df = pd.read_csv(RES / "scenarios" / f"{sc}_comparison.csv")
         df = df[df.Code != "B1"]
@@ -256,7 +256,7 @@ def figure4(sch, stu, dist, assign):
 # ---------------------------------------------------------------- Figure 5: radius sensitivity
 def figure5():
     bound = {"S1": 0, "S2": 0, "S3": 209}
-    fig, axes = plt.subplots(1, 3, figsize=(FULL_IN, 2.75), sharey=True)
+    fig, axes = plt.subplots(1, 3, figsize=(FULL_IN, 2.40), sharey=True)
     for ax, (sc, title) in zip(axes, SCEN.items()):
         df = pd.read_csv(RES / "scenarios" / f"{sc}_radius.csv")
         df = df[df["Radius (km)"] != np.inf]
@@ -285,7 +285,7 @@ def figure5():
 # ---------------------------------------------------------------- Figure 6: violation budgets
 def figure6():
     pp = pd.read_csv(RES / "pareto_ortools915" / "pareto_points.csv")
-    fig, axes = plt.subplots(1, 3, figsize=(FULL_IN, 2.95), sharey=True)
+    fig, axes = plt.subplots(1, 3, figsize=(FULL_IN, 2.50), sharey=True)
     for ax, sc in zip(axes, SCEN):
         sub = pp[pp.Scenario == sc]
         da = float(sub[sub.Point == "DA"].admitted.iloc[0])
