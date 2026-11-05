@@ -61,6 +61,30 @@ The script recomputes the three quantities and compares them with
 | S2 | 1180 | 1107 | 281 |
 | S3 | 986 | 940 | 193 |
 
+The distance objectives are certified separately, because the pair table rounds
+every distance to 50 m. For each scenario and method,
+`artifacts/objective_certificates.csv` holds the exact number of assignments,
+the exact maximum assigned distance and the exact total assigned distance, and
+`artifacts/distance_bins_S*.csv` holds the exact subtotal of the assigned
+distances inside consecutive distance groups. Every released group covers at
+least five assigned pairs, so a subtotal cannot be attached to one applicant,
+and adding the subtotals returns the certified total:
+
+| Scenario | LEXZON total | B5 total | Maximum under LEXZON |
+|---|---|---|---|
+| S1 | 366.0838 km | 366.0838 km | 0.995428 km |
+| S2 | 323.9314 km | 323.9314 km | 0.995428 km |
+| S3 | 226.6216 km | 223.3587 km | 0.859053 km |
+
+`artifacts/zstar_certificate.csv` certifies the bottleneck threshold without any
+exact distance at all: on the rounded pair table the eligibility subgraph still
+carries a flow of N* at 1.00 km in S1 and S2 and at 0.85 km in S3, and a smaller
+flow one 50 m bin below, which brackets z*. The same script checks all of this
+and prints the comparison.
+
+Only the figures that plot applicant positions cannot be regenerated from the
+release, because they need the coordinates themselves.
+
 ## Reproducing the experiments
 
 ```bash
