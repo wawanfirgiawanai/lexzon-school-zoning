@@ -1,6 +1,6 @@
 """R1.3: audit the published numbers from the released artifacts alone.
 
-The script uses only docs/artifacts/, that is the eligibility structure, the
+The script uses only artifacts/, that is the eligibility structure, the
 two-sided rankings, the rounded distances and the capacities. No applicant
 coordinates are required. It recomputes
 
@@ -8,9 +8,14 @@ coordinates are required. It recomputes
   deferred-acceptance enrollment from the published rankings,
   priority violations            of the published LEXZON assignment,
 
-and compares them with the values recorded in instances.json.
+and compares them with the values recorded in instances.json. It then audits the
+distance objectives from objective_certificates.csv, distance_bins_S*.csv and
+zstar_certificate.csv: the released group subtotals must add up to the certified
+total and the released counts to the certified number of assignments, and the
+threshold certificate must hold on the rounded pair table, that is a flow of N*
+at the stated threshold and a smaller flow one 50 m bin below it.
 
-Output: docs/artifacts/verification.csv
+Output: artifacts/verification.csv
 """
 import json
 import sys
@@ -24,7 +29,7 @@ sys.path.insert(0, str(ROOT))
 from lexzon import baselines, solver  # noqa: E402
 from lexzon.fairness import priority_violations  # noqa: E402
 
-ART = ROOT / "docs" / "artifacts"
+ART = ROOT / "artifacts"
 RADIUS = 1.0
 FAR = 10.0          # stand-in distance for pairs outside the radius
 
@@ -83,6 +88,40 @@ def main():
     ok = (df["N* published"] == df["N* recomputed"]).all() and (df["DA published"] == df["DA recomputed"]).all()
     print("enrollment certificates reproduce exactly:", bool(ok))
     print("written", ART / "verification.csv")
+    print()
+    print("distance objectives:", "reproduce exactly" if audit_distances() else "MISMATCH")
+
+
+def audit_distances():
+    """Rebuild the certified totals from the released groups and check the threshold."""
+    cert = pd.read_csv(ART / "objective_certificates.csv")
+    zst = pd.read_csv(ART / "zstar_certificate.csv").set_index("Scenario")
+    good = True
+    for scen in sorted(cert["Scenario"].unique()):
+        bins = pd.read_csv(ART / f"distance_bins_{scen}.csv")
+        agg = bins.groupby("Method").agg(pairs=("Pairs", "sum"), total=("Exact subtotal (km)", "sum"))
+        for _, row in cert[cert["Scenario"] == scen].iterrows():
+            a = agg.loc[row["Method"]]
+            same = int(a["pairs"]) == int(row["Assigned"]) and                 abs(a["total"] - row["Total distance (km)"]) < 5e-4
+            good &= same
+            print(f"  {scen} {row['Method']:22s} assigned {int(a['pairs']):4d} "
+                  f"total {a['total']:9.4f} km  certified {row['Total distance (km)']:9.4f} km  "
+                  f"{'ok' if same else 'MISMATCH'}")
+
+        # the threshold certificate, recomputed from the rounded pair table
+        dist, rank, _, quotas, _, _, _ = load(scen)
+        eligible = np.isfinite(rank)
+        z = zst.loc[scen]
+        n_star = int(z["N*"])
+        t = float(z["Smallest rounded threshold with flow N* (km)"])
+        at = int(solver.max_flow(np.where(eligible & (dist <= t + 1e-9), 1.0, FAR), quotas, 1.0))
+        below = int(solver.max_flow(np.where(eligible & (dist <= t - 0.05 + 1e-9), 1.0, FAR),
+                                    quotas, 1.0))
+        holds = at == n_star == int(z["Flow at that threshold"]) and below < n_star
+        good &= holds
+        print(f"  {scen} threshold {t:.2f} km: flow {at} (N* = {n_star}), one bin below {below} "
+              f"{'ok' if holds else 'MISMATCH'}")
+    return bool(good)
 
 
 if __name__ == "__main__":

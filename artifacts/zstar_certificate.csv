@@ -1,0 +1,4 @@
+Scenario,N*,Smallest rounded threshold with flow N* (km),Flow at that threshold,Flow one bin below,Exact z* (km)
+S1,1141,1.0,1141,1139,0.995428
+S2,1180,1.0,1180,1178,0.995428
+S3,986,0.85,986,976,0.859053
