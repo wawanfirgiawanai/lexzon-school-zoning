@@ -269,7 +269,7 @@ def figure5():
                     markersize=3, linewidth=1.1, label=lab)
         ax.axhline(bound[sc], color=INK, linestyle=(0, (1, 2)), linewidth=0.8,
                    label="Aggregate capacity lower bound")
-        ax.set_title(f"({'abc'[list(SCEN).index(sc)]}) {title}")
+        ax.set_title(title)
         ax.set_xlabel("Eligibility radius (km)")
         ax.set_xticks([0.5, 1.5, 2.5])
         ax.set_ylim(-10, 350); ax.tick_params(length=2.5)
